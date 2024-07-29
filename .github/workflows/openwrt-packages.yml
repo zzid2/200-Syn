@@ -116,6 +116,7 @@ jobs:
         
         
     - name: 克隆软件包下                    ## Clone packages
+      continue-on-error: true 
       env:
         GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
