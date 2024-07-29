@@ -116,14 +116,20 @@ jobs:
         
         
     - name: 克隆软件包下                    ## Clone packages
+      env:
+        GITHUB_WORKSPACE: ${{ github.workspace }}
       run: |
+        set -e
         pwd && ls
         
         
         main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_former directories: $main_former"
+        echo "main_new directories: $main_new"
+        
         main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
         duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))
-        
+        echo "Duplicate subdirectories: $duplicate_subdirs"
         
         # echo "main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
         
@@ -139,6 +145,7 @@ jobs:
         # 删除 main 中的重复子目录
         for subdir in $duplicate_subdirs; do
             rm -rf "main/$subdir"
+            echo "Removing duplicate directory: main/$subdir"
         done
         
         mkdir -p main/former
