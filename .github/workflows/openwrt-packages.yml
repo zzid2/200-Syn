@@ -25,7 +25,7 @@ on:
       
 env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-130.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-120.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
@@ -88,7 +88,7 @@ jobs:
         pwd && ls
         
         chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { echo "遇到新仓库克隆失败，初始推送到新仓库"; mkdir ${{matrix.target}}; cd ${{matrix.target}}; git init; git branch -M main; git checkout -b $REPO_BRANCH; cd ..; }  ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { echo "遇到新仓库克隆失败，初始推送到新仓库"; mkdir ${{matrix.target}}; cd ${{matrix.target}}; git init; git config --global init.defaultBranch main; git branch -M main; git checkout -b $REPO_BRANCH; cd ..; }  ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
         cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
         
         rm -rf {LICENSE,README,README.md,README_en.md}
