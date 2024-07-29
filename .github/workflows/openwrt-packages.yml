@@ -83,39 +83,39 @@ jobs:
         
         
         
-- name: 克隆软件包  # Clone packages
-  run: |
-    pwd && ls
-    chmod +x build/${{matrix.target}}.sh  # build目录内的main.sh脚本 增加可执行的权限
+    - name: 克隆软件包  # Clone packages
+      run: |
+        pwd && ls
+        chmod +x build/${{matrix.target}}.sh  # build目录内的main.sh脚本 增加可执行的权限
+        
+        # 尝试克隆仓库并输出调试信息
+        echo "克隆仓库URL: $CangKu_URL"
+        echo "克隆分支: $REPO_BRANCH"
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { 
+        echo "遇到新仓库克隆失败，初始推送到新仓库"; 
+        mkdir ${{matrix.target}}; 
+        cd ${{matrix.target}}; 
+        git init; 
+        git config --global init.defaultBranch main; 
+        git checkout -b $REPO_BRANCH; 
+        git remote add origin $CangKu_URL; 
+        cd ..; 
+        } || { 
+        echo "克隆或初始化仓库失败，请检查仓库URL或权限设置。"; 
+        exit 1; 
+        }
 
-    # 尝试克隆仓库并输出调试信息
-    echo "克隆仓库URL: $CangKu_URL"
-    echo "克隆分支: $REPO_BRANCH"
-    git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { 
-      echo "遇到新仓库克隆失败，初始推送到新仓库"; 
-      mkdir ${{matrix.target}}; 
-      cd ${{matrix.target}}; 
-      git init; 
-      git config --global init.defaultBranch main; 
-      git checkout -b $REPO_BRANCH; 
-      git remote add origin $CangKu_URL; 
-      cd ..; 
-    } || { 
-      echo "克隆或初始化仓库失败，请检查仓库URL或权限设置。"; 
-      exit 1; 
-    }
+        cd ${{matrix.target}}
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}  # 删除无用说明
 
-    cd ${{matrix.target}}
-    rm -rf {LICENSE,README,README.md,README_en.md}
-    rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-    rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}  # 删除无用说明
-
-    git rm -r --cache * >/dev/null 2>&1 &
-    rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1  # 删除当前所有插件源码
-    $GITHUB_WORKSPACE/build/${{matrix.target}}.sh  # 执行main.sh
-    bash /$GITHUB_WORKSPACE/build/convert_translation.sh  # 执行convert_translation.sh
-    bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a  # 执行create_acl_for_luci.sh
-    bash /$GITHUB_WORKSPACE/build/Modify.sh  # 执行Modify.sh
+        git rm -r --cache * >/dev/null 2>&1 &
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1  # 删除当前所有插件源码
+        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh  # 执行main.sh
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh  # 执行convert_translation.sh
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a  # 执行create_acl_for_luci.sh
+        bash /$GITHUB_WORKSPACE/build/Modify.sh  # 执行Modify.sh
 
         
         
