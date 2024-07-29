@@ -83,40 +83,48 @@ jobs:
         
         
         
-    - name: 克隆软件包  # Clone packages
+    - name: 克隆软件包                    ## Clone packages
       run: |
         pwd && ls
-        chmod +x build/${{matrix.target}}.sh  # build目录内的main.sh脚本 增加可执行的权限
         
-        # 尝试克隆仓库并输出调试信息
-        echo "克隆仓库URL: $CangKu_URL"
-        echo "克隆分支: $REPO_BRANCH"
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { 
-        echo "遇到新仓库克隆失败，初始推送到新仓库"; 
-        mkdir ${{matrix.target}}; 
-        cd ${{matrix.target}}; 
-        git init; 
-        git config --global init.defaultBranch main; 
-        git checkout -b $REPO_BRANCH; 
-        git remote add origin $CangKu_URL; 
-        cd ..; 
-        } || { 
-        echo "克隆或初始化仓库失败，请检查仓库URL或权限设置。"; 
-        exit 1; 
-        }
-
-        cd ${{matrix.target}}
+        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { echo "遇到新仓库克隆失败，初始推送到新仓库"; mkdir ${{matrix.target}}; cd ${{matrix.target}}; git init; git config --global init.defaultBranch main; git checkout -b $REPO_BRANCH; git remote add origin $CangKu_URL; cd ..; }  ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
+        
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}  # 删除无用说明
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
+        
+        git rm -r --cache * >/dev/null 2>&1 &                                     ## 清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除当前所有插件源码，（只保存插件版本号在 index内）
+        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
 
-        git rm -r --cache * >/dev/null 2>&1 &
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1  # 删除当前所有插件源码
-        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh  # 执行main.sh
-        bash /$GITHUB_WORKSPACE/build/convert_translation.sh  # 执行convert_translation.sh
-        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a  # 执行create_acl_for_luci.sh
-        bash /$GITHUB_WORKSPACE/build/Modify.sh  # 执行Modify.sh
-
+        # 在线手动执行步骤
+        # cd .github               ## 进入隐藏文件
+        
+        # chmod +x build/main.sh
+        # git clone -b main https://github.com/zzid2/120.git main
+        
+        # mkdir -p main
+        # touch main/120.txt
+        # echo "123456" > "main/120.txt"
+        # cat main/120.txt
+        
+        # cd main
+        # git rm -r --cache * >/dev/null 2>&1 &
+        # rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
+        # cd ../
+        # bash build/main.sh
+        # bash build/convert_translation.sh
+        # bash build/create_acl_for_luci.sh -a
+        # bash build/Modify.sh
+        # cd main
+        # git add .
+        # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
+        # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
         
         
     - name: 上传   ## Upload
