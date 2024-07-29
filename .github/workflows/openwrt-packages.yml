@@ -120,20 +120,20 @@ jobs:
         pwd && ls
         
         
+        main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))
         
         
+        # echo "main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
         
-        
-        
-        echo "main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
-        
-        echo "main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
+        # echo "main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
         
         # main_former=$(echo "$main_former")
         # main_new=$(echo "$main_new")
         
         
-        duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))
+        # duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))
         
         
         # 删除 main 中的重复子目录
