@@ -154,7 +154,7 @@ jobs:
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
-        git rm -r --cache * >/dev/null 2>&1 &                                     ## 将所有文件和目录从 Git 的暂存区中递归地移除，但不删除工作目录中的实际文件     清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        # git rm -r --cache * >/dev/null 2>&1 &                                     ## 将所有文件和目录从 Git 的暂存区中递归地移除，但不删除工作目录中的实际文件     清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
         
         # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 找到当前目录下所有目录，除了名为 build 的目录，并强制递归删除这些找到的目录及其内容   删除当前所有插件源码，（只保存插件版本号在 index内）
         
