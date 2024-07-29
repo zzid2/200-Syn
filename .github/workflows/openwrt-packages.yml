@@ -25,7 +25,7 @@ on:
       
 env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-120.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-130.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
@@ -73,6 +73,38 @@ jobs:
         sudo timedatectl set-timezone "$TZ"                                         ## 设置时区为上海
         
         
+    - name: 克隆软件包上                    ## Clone packages
+      run: |
+        pwd && ls
+        
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || {
+            echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
+            mkdir ${{matrix.target}};
+            cd ${{matrix.target}};
+            git init;                                                                 ## 初始化一个新的Git仓库
+            git config --global init.defaultBranch $REPO_BRANCH;                      ## 设置全局默认分支名称
+            git branch -M $REPO_BRANCH;                                               ## 重命名当前分支为指定分支
+            git checkout -b $REPO_BRANCH;                                             ## 创建并切换到指定分支
+            cd ..;                                                                    ## 返回上级目录
+        }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        
+        cd ${{matrix.target}}
+        git rm -r --cache * >/dev/null 2>&1 &
+        cd ../
+        
+        mkdir -p main_new
+        cd main_new
+        chmod +x $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        git rm -r --cache * >/dev/null 2>&1 &
+        
+        cd $GITHUB_WORKSPACE
+        
+        
+        
         
     - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
@@ -83,24 +115,43 @@ jobs:
         
         
         
-    - name: 克隆软件包                    ## Clone packages
+    - name: 克隆软件包下                    ## Clone packages
       run: |
         pwd && ls
         
-        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { echo "遇到新仓库克隆失败，初始推送到新仓库"; mkdir ${{matrix.target}}; cd ${{matrix.target}}; git init; git config --global init.defaultBranch main; git branch -M main; git checkout -b $REPO_BRANCH; cd ..; }  ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
-        cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
+        
+        
+        
+        
+        
+        
+        echo "main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
+        echo "main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)" >> $GITHUB_ENV
+        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
+        
+        # 删除 main 中的重复子目录
+        for subdir in $duplicate_subdirs; do
+            rm -rf "main/$subdir"
+        done
+        
+        mkdir -p main/former
+        cd main
+        find . -maxdepth 1 -mindepth 1 -not -name 'former' -exec mv -t former {} +     ## 使用 find 命令找到所有文件和文件夹，并移动它们到 former 文件夹中
+        
+        cd $GITHUB_WORKSPACE
+        mv main_new main/
+        
+        cd ${{matrix.target}}                                                      ## 进入名称为 main_new 的目录内；
         
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
-        git rm -r --cache * >/dev/null 2>&1 &                                     ## 清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除当前所有插件源码，（只保存插件版本号在 index内）
-        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
-        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
-        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
-        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        git rm -r --cache * >/dev/null 2>&1 &                                     ## 将所有文件和目录从 Git 的暂存区中递归地移除，但不删除工作目录中的实际文件     清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        
+        # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 找到当前目录下所有目录，除了名为 build 的目录，并强制递归删除这些找到的目录及其内容   删除当前所有插件源码，（只保存插件版本号在 index内）
+        
+
 
         # 在线手动执行步骤
         # cd .github               ## 进入隐藏文件
