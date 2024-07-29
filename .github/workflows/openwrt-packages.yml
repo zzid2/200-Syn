@@ -88,7 +88,7 @@ jobs:
         pwd && ls
         
         chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { echo "初始推送到新仓库"; mkdir ${{matrix.target}}; cd ${{matrix.target}}; git init; git checkout -b $REPO_BRANCH; cd ..; }  ## 克隆旧版本插件到 main 目录内，如果失败则初始化新的仓库
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || { echo "遇到新仓库克隆失败，初始推送到新仓库"; mkdir ${{matrix.target}}; cd ${{matrix.target}}; git init; git checkout -b $REPO_BRANCH; git remote add origin $CangKu_URL; cd ..; }  ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
         cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
         
         rm -rf {LICENSE,README,README.md,README_en.md}
