@@ -173,7 +173,6 @@ jobs:
         echo "main_former=$main_former" >> $GITHUB_ENV
         echo "main_new=$main_new" >> $GITHUB_ENV
         duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))
-
         for subdir in $duplicate_subdirs; do
           rm -rf "main_former/$subdir"
           echo "删除重复目录: main_former/$subdir"
