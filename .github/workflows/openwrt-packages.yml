@@ -115,8 +115,8 @@ jobs:
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
-        
-        git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        rm -rf .git
+        # git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
         echo "这是一个存放删库的目录" > former.txt
         
         cd $GITHUB_WORKSPACE
