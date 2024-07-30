@@ -165,19 +165,19 @@ jobs:
         # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
         # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
         
-    - name: 比较                    ## Clone packages
+    - name: 比较和删除重复子目录
       run: |
-        # pwd && ls
-        main_former=$(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        main_new=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        echo "main_former=$main_former" >> $GITHUB_ENV
-        echo "main_new=$main_new" >> $GITHUB_ENV
-        duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))
+        # 获取 main_former 和 main 的子目录列表
+        main_former_dirs=$(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        main_new_dirs=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        
+        # 找到重复的子目录
+        duplicate_subdirs=$(echo "$main_former_dirs" | grep -xF -f <(echo "$main_new_dirs"))
+        # 删除 main_former 中的重复子目录
         for subdir in $duplicate_subdirs; do
           rm -rf "main_former/$subdir"
           echo "删除重复目录: main_former/$subdir"
         done
-        
         
         
         
