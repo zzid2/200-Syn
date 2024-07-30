@@ -94,7 +94,7 @@ jobs:
         main_former: $(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
         main_new: $(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
       run: |
-        pwd && ls
+        # pwd && ls
         
         
         
@@ -143,11 +143,11 @@ jobs:
         echo "main_former=$main_former" >> $GITHUB_ENV
         echo "main_new=$main_new" >> $GITHUB_ENV
         echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
-        
+        pwd && ls
         # 删除 main_former 中的重复子目录
         for subdir in $duplicate_subdirs; do
             rm -rf "main_former/$subdir"
-            echo "Removing duplicate directory: main_former/$subdir"
+            echo "删除重复目录: main_former/$subdir"
         done
         
         
@@ -185,7 +185,7 @@ jobs:
         name: Bin_${{ env.NAME2 }}${{ env.NAME1 }}_${{ env.date }}     # 文件名称
         path: |                # bin目录路径
           ${{ github.workspace }}
-          ./main
+          ./main_former
         
         
         
