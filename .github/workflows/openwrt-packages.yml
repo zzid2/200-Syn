@@ -184,9 +184,9 @@ jobs:
       with:
         name: Bin_${{ env.NAME2 }}${{ env.NAME1 }}_${{ env.date }}     # 文件名称
         path: |                # bin目录路径
-          
-          ${{matrix.target}}_former
           ${{ github.workspace }}     ## 执行目录，整个仓库目录
+          ## ${{matrix.target}}_former
+          
         
         
         
