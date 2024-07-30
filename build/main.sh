@@ -67,8 +67,8 @@ git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot.git            
 ### git clone --depth 1 https://github.com/kenzok78/luci-app-adguardhome																			# Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok8/wall.git && mv -n wall/{adguardhome,filebrowser,gost} ./; rm -rf wall			  	            # 保留：Adguardhome filebrowser（网盘） gost（gost VPN隧道）
 
-### git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
-### mv alist luci-app-alist                                                         # 移动alist文件
+git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
+mv alist luci-app-alist                                                         # 移动alist文件
 ### https://github.com/lmq8267/luci-app-alist
 
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman               # Docker容器管理
