@@ -73,24 +73,10 @@ jobs:
         sudo timedatectl set-timezone "$TZ"                                         ## 设置时区为上海
         
         
-        main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        echo "main_former=$main_former" >> $GITHUB_ENV
-        
-        main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        echo "main_new=$main_new" >> $GITHUB_ENV
-        
-        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
         
         
         
-        
-    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
+
         
         
         
@@ -157,11 +143,37 @@ jobs:
         
         
         
+        main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_former=$main_former" >> $GITHUB_ENV
+        
+        main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_new=$main_new" >> $GITHUB_ENV
+        
+        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
         
         
         
         
         
+        
+        
+    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        
+        
+        
+        
+        
+    - name: 克隆软件包下                    ## Clone packages
+      env:
+        GITHUB_WORKSPACE: ${{ github.workspace }}
+      run: |
+        # set -e
+        pwd && ls
         
         
         # 删除 main 中的重复子目录
@@ -175,12 +187,16 @@ jobs:
         
         
         
-    # - name: 克隆软件包下                    ## Clone packages
-      # env:
-        # GITHUB_WORKSPACE: ${{ github.workspace }}
-      # run: |
-        # set -e
-        # pwd && ls
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         # main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
