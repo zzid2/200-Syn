@@ -90,9 +90,6 @@ jobs:
         
         
     - name: 克隆软件包                    ## Clone packages
-      env:
-        main_former: $(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        main_new: $(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
       run: |
         # pwd && ls
         
@@ -139,18 +136,7 @@ jobs:
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
-        cd $GITHUB_WORKSPACE
-        echo "main_former=$main_former" >> $GITHUB_ENV
-        echo "main_new=$main_new" >> $GITHUB_ENV
-        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
-        pwd && ls
-        
-        # 删除 main_former 中的重复子目录
-        for subdir in $duplicate_subdirs; do
-          rm -rf "main_former/$subdir"
-          echo "删除重复目录: main_former/$subdir"
-        done
-        
+
         
         
         
@@ -178,6 +164,29 @@ jobs:
         # git add .
         # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
         # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
+        
+    - name: 比较                    ## Clone packages
+      env:
+        main_former: $(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        main_new: $(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+      run: |
+        # pwd && ls
+        
+        
+        cd $GITHUB_WORKSPACE
+        echo "main_former=$main_former" >> $GITHUB_ENV
+        echo "main_new=$main_new" >> $GITHUB_ENV
+        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
+        pwd && ls
+        
+        # 删除 main_former 中的重复子目录
+        for subdir in $duplicate_subdirs; do
+          rm -rf "main_former/$subdir"
+          echo "删除重复目录: main_former/$subdir"
+        done
+        
+        
+        
         
         
     - name: 上传bin目录(全部固件+ipk)               ## Upload bin directory
