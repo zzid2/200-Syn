@@ -1,3 +1,9 @@
+
+## 创建“20-Syn”仓库--->>此仓库“绑定ACCESS_TOKEN令牌值”--->>添加"工作流执行权限"--->>手动创建“GitHub Actions”工作流--->>上传所有源码。
+## 创建“luci-app”仓库--->>上传任意源码文件。
+## 首先手动运行一次“20-Syn”工作流。
+
+
 name: 更新_Luci插件                                    ## Actions工作流的名称
 on:
   repository_dispatch:                                 ## 存储库调度
@@ -25,7 +31,7 @@ on:
       
 env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-app.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
@@ -74,14 +80,16 @@ jobs:
         
         
         
+    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
-
         
         
-        
-        
-        
-    - name: 克隆软件包上                    ## Clone packages
+    - name: 克隆软件包                    ## Clone packages
       env:
         main_former: $(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
         main_new: $(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
@@ -89,48 +97,46 @@ jobs:
         pwd && ls
         
         
+        
         git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}}_former || {
             echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
             mkdir ${{matrix.target}}_former;
             cd ${{matrix.target}}_former;
-            git init .;                                                               ## 初始化一个新的Git仓库
+            git init;                                                                 ## 初始化一个新的Git仓库
             git config --global init.defaultBranch $REPO_BRANCH;                      ## 设置全局默认分支名称
             git branch -M $REPO_BRANCH;                                               ## 重命名当前分支为指定分支
             git checkout -b $REPO_BRANCH;                                             ## 创建并切换到指定分支
-            cd ../;                                                                   ## 返回上级目录
+            cd ..;                                                                    ## 返回上级目录
         }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
         
-        cd ${{matrix.target}}_former
+        
+        cd ${{matrix.target}}_former                                                       ## 进入名称为 main 的目录内；
         
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
-        git rm -r --cache * >/dev/null 2>&1 &
-        rm -rf .git
-        echo "$(date +%s)" > start_time11.txt
-        git add
-        # rm -f .git/index     ## 修复索引
-        # git reset    ## 修复索引
+        
+        git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        echo "这是一个存放删库的目录" > former.txt
         
         cd $GITHUB_WORKSPACE
         
-        chmod +x build/*.sh
+        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        
         mkdir -p main
         cd main
+        # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
         $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
-        git rm -r --cache * >/dev/null 2>&1 &
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1
-        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh
-        bash /$GITHUB_WORKSPACE/build/convert_translation.sh
-        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a
-        bash /$GITHUB_WORKSPACE/build/Modify.sh
-        
         cd $GITHUB_WORKSPACE
-        
         echo "main_former=$main_former" >> $GITHUB_ENV
         echo "main_new=$main_new" >> $GITHUB_ENV
         echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
@@ -141,27 +147,51 @@ jobs:
             echo "Removing duplicate directory: main_former/$subdir"
         done
         
-        mv main_former main
-        
-        
-    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
         
         
+        # 在线手动执行步骤
+        # cd .github               ## 进入隐藏文件
         
+        # chmod +x build/main.sh
+        # git clone -b main https://github.com/zzid2/120.git main
+        
+        # mkdir -p main
+        # touch main/120.txt
+        # echo "123456" > "main/120.txt"
+        # cat main/120.txt
+        
+        # cd main
+        # git rm -r --cache * >/dev/null 2>&1 &
+        # rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
+        # cd ../
+        # bash build/main.sh
+        # bash build/convert_translation.sh
+        # bash build/create_acl_for_luci.sh -a
+        # bash build/Modify.sh
+        # cd main
+        # git add .
+        # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
+        # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
+        
+        
+    - name: 上传bin目录(全部固件+ipk)               ## Upload bin directory
+      uses: actions/upload-artifact@v4              ## https://github.com/actions/upload-artifact
+      with:
+        name: Bin_${{ env.NAME2 }}${{ env.NAME1 }}_${{ env.date }}     # 文件名称
+        path: |                # bin目录路径
+          
+          ${{matrix.target}}_former
 
+        
+        
         
     - name: 上传   ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
-        # pwd && ls
+        pwd && ls
         
         if [ -e $GITHUB_WORKSPACE/LICENSE ]; then          ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
           cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/${{matrix.target}}
@@ -172,23 +202,17 @@ jobs:
         fi
         
         cd $GITHUB_WORKSPACE/${{matrix.target}}            ## 进入到main目录内
-        git add .
-        git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
-        pwd && ls
-        # git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}
-        git remote set-url origin https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git
-        git push origin HEAD:${{ matrix.target }}
         
-
-
+        if git status --porcelain | grep .; then           ## 判断！ 当插件有更新差异时，提交，
+          git add .
+          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
+          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}     ## 上传仓库的地址（新创建的仓库）
+        else
+          echo "nothing to commit"                         ## 反之提示： “没有什么可提交的”
+          exit 0
+        fi || exit 0
         
-    - name: 上传bin目录(全部固件+ipk)               ## Upload bin directory
-      uses: actions/upload-artifact@v4              ## https://github.com/actions/upload-artifact
-      with:
-        name: Bin_${{ env.NAME2 }}${{ env.NAME1 }}_${{ env.date }}     # 文件名称
-        path: |                # bin目录路径
-          ${{ github.workspace }}
-          ./main
+        
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
@@ -230,4 +254,5 @@ jobs:
               
               "
               ## 结尾
+              
               
