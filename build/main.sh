@@ -35,8 +35,8 @@ rm -rf $1
 
 
 ### 科学上网插件             ## 克隆到 .github 目录内, 与diy、workflows、同个路径
-git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
-mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
+### git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
+### mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
 ### git clone --depth 1 https://github.com/jerrykuku/lua-maxminddb.git																								  # luci-app-bypass插件的其中一个依赖包
 
 git clone --depth 1 https://github.com/vernesong/OpenClash.git && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash                       # OenClash小猫咪
@@ -117,7 +117,7 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git     
 
 # 长期不维护的源码
 # https://github.com/pppoex/openwrt-packages?tab=readme-ov-file
-git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+### git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
 
 git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
 
