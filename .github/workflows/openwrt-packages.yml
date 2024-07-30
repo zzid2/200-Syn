@@ -73,6 +73,13 @@ jobs:
         sudo timedatectl set-timezone "$TZ"                                         ## 设置时区为上海
         
         
+        main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_former=$main_former" >> $GITHUB_ENV
+        
+        main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_new=$main_new" >> $GITHUB_ENV
+        
+        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
         
         
         
@@ -148,15 +155,11 @@ jobs:
         
         
         
-        main_former=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        echo "main_former=$main_former" >> $GITHUB_ENV
         
         
-        main_new=$(find main_new -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        echo "main_new=$main_new" >> $GITHUB_ENV
         
         
-        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
+        
         
         
         
