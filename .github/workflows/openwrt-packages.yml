@@ -106,7 +106,7 @@ jobs:
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         git rm -r --cache * >/dev/null 2>&1 &
-        
+        echo "$(date +%s)" > start_time11.txt
         cd $GITHUB_WORKSPACE
         
         chmod +x build/*.sh
