@@ -115,16 +115,19 @@ jobs:
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
-        rm -rf .git
-        # git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
-        echo "这是一个存放删库的目录" > former.txt
+        # rm -rf .git
+        git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1
+        # echo "这是一个存放删库的目录" > former.txt
         
         cd $GITHUB_WORKSPACE
         
         chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         
         mkdir -p main
+        mv ${{matrix.target}}_former/.git main
         cd main
+        
         # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
         $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         
@@ -183,7 +186,7 @@ jobs:
         path: |                # bin目录路径
           
           ${{matrix.target}}_former
-
+          ${{ github.workspace }}     ## 执行目录，整个仓库目录
         
         
         
