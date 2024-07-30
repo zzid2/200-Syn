@@ -106,9 +106,12 @@ jobs:
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         git rm -r --cache * >/dev/null 2>&1 &
+        rm -rf .git
         echo "$(date +%s)" > start_time11.txt
-        rm -f .git/index     ## 修复索引
-        git reset    ## 修复索引
+        git add
+        # rm -f .git/index     ## 修复索引
+        # git reset    ## 修复索引
+        
         cd $GITHUB_WORKSPACE
         
         chmod +x build/*.sh
