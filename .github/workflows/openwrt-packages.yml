@@ -125,7 +125,7 @@ jobs:
         mv ${{matrix.target}}_former/.git main
         cd main
         
-        # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
         $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         
         bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
