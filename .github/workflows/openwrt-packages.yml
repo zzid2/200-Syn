@@ -181,7 +181,9 @@ jobs:
       uses: actions/upload-artifact@v4              ## https://github.com/actions/upload-artifact
       with:
         name: Bin_${{ env.NAME2 }}${{ env.NAME1 }}_${{ env.date }}     # 文件名称
-        path: ./main   # bin目录路径
+        path: |                # bin目录路径
+          ${{ github.workspace }}
+          ./main
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
