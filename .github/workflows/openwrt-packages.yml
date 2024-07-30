@@ -25,7 +25,7 @@ on:
       
 env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-130.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-120.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
@@ -84,8 +84,73 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
- 
         
+        
+        
+        
+        
+    - name: 克隆软件包上                    ## Clone packages
+      run: |
+        pwd && ls
+        
+        
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}}_former || {
+            echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
+            mkdir ${{matrix.target}}_former;
+            cd ${{matrix.target}}_former;
+            git init .;                                                               ## 初始化一个新的Git仓库
+            git config --global init.defaultBranch $REPO_BRANCH;                      ## 设置全局默认分支名称
+            git branch -M $REPO_BRANCH;                                               ## 重命名当前分支为指定分支
+            git checkout -b $REPO_BRANCH;                                             ## 创建并切换到指定分支
+            cd ../;                                                                   ## 返回上级目录
+        }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        
+        
+        chmod +x build/*.sh
+        cd ${{matrix.target}}_former
+        
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        
+        
+        cd $GITHUB_WORKSPACE
+        
+        
+        mkdir -p main
+        cd main
+        
+        chmod +x $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
+        git rm -r --cache * >/dev/null 2>&1 &
+        
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文   转换翻译文件
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示  创建 ACL 文件
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        
+        
+        cd $GITHUB_WORKSPACE
+        
+        
+        main_former=$(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_former=$main_former" >> $GITHUB_ENV
+        
+        main_new=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        echo "main_new=$main_new" >> $GITHUB_ENV
+        
+        echo "duplicate_subdirs=$(echo "$main_former" | grep -xF -f <(echo "$main_new"))" >> $GITHUB_ENV
+        
+        # 删除 main_former 中的重复子目录
+        for subdir in $duplicate_subdirs; do
+            rm -rf "main_former/$subdir"
+            echo "Removing duplicate directory: main_former/$subdir"
+        done
+        
+        mv main_former main
         
     - name: 上传   ## Upload
       env: 
