@@ -117,7 +117,7 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git     
 
 # 长期不维护的源码
 # https://github.com/pppoex/openwrt-packages?tab=readme-ov-file
-git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+## git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
 
 git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
 
@@ -145,17 +145,17 @@ git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard  
 
 
 # 主题源码
-git clone --depth=1 https://github.com/openwrt-develop/luci-theme-atmaterial.git                       # atmaterials 主题（不推荐）
+##git clone --depth=1 https://github.com/openwrt-develop/luci-theme-atmaterial.git                       # atmaterials 主题（不推荐）
 ### git clone --depth 1 https://github.com/uparrows/luci-theme-atmaterial.git                          # atmaterials 主题（不推荐）
 
 ### git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon                                # 重复的Argon主题
 ### git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config                           # 重复的Argon主题
 
-git clone --depth 1 https://github.com/gngpp/luci-theme-design.git					                   # 黑暗主题，   针对移动端优化
-git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
+## git clone --depth 1 https://github.com/gngpp/luci-theme-design.git					                   # 黑暗主题，   针对移动端优化
+###git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
 
-git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
-git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
+##git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
+##git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
 
 ### git clone --depth 1 https://github.com/sirpdboy/luci-theme-opentopd                                  # 橙色主题
 ### git clone --depth 1 https://github.com/kenzok8/luci-theme-ifit ifit && mv -n ifit/luci-theme-ifit ./;rm -rf ifit
