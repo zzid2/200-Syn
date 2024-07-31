@@ -183,15 +183,20 @@ jobs:
         
         
     - name: 整理重复子目录
+      env:
+        $REPO_FORMER: $(find $REPO_FORMER -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)                    ## former目录 
+        ${{matrix.target}}: $(find ${{matrix.target}} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)        ## main目录
+        repeat_dirs: $(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))"
       run: |
-        $REPO_FORMER=$(find $REPO_FORMER -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)                    ## former目录
-        echo "REPO_FORMER=$REPO_FORMER" >> $GITHUB_ENV
         
-        ${{matrix.target}}=$(find ${{matrix.target}} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)        ## main目录
-        echo "${{matrix.target}}=${{matrix.target}}" >> $GITHUB_ENV
+        # echo "REPO_FORMER=$REPO_FORMER" >> $GITHUB_ENV
+        
+        
+        # echo "${{matrix.target}}=${{matrix.target}}" >> $GITHUB_ENV
         
         # repeat_dirs=$(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))                         ## 重复的子目录
-        echo "repeat_dirs=$(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))" >> $GITHUB_ENV
+        # echo "repeat_dirs=$(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))" >> $GITHUB_ENV
+        
         for subdir in $repeat_dirs; do
             if [ "$subdir" != ".git" ]; then
                 rm -rf "$REPO_FORMER/$subdir"
