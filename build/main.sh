@@ -53,8 +53,8 @@ git clone --depth 1 https://github.com/fw876/helloworld luci-app-ssr-plus							
 
 git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
 
-## git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
-## mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
+git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
+mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
 
 git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git                                           # 解锁网易云音乐
 ### https://github.com/immortalwrt/luci-app-unblockneteasemusic.git 
@@ -63,12 +63,12 @@ git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot.git            
 ### git clone --depth 1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush.git                                                          # luci-app-wechatpush   （微信/Telegram）推送插件
 
 
-## git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
+git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok78/luci-app-adguardhome																			# Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok8/wall.git && mv -n wall/{adguardhome,filebrowser,gost} ./; rm -rf wall			  	            # 保留：Adguardhome filebrowser（网盘） gost（gost VPN隧道）
 
-## git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
-## mv alist luci-app-alist                                                         # 移动alist文件
+git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
+mv alist luci-app-alist                                                         # 移动alist文件
 ### https://github.com/lmq8267/luci-app-alist
 
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman               # Docker容器管理
@@ -117,7 +117,7 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git     
 
 # 长期不维护的源码
 # https://github.com/pppoex/openwrt-packages?tab=readme-ov-file
-## git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
 
 git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
 
@@ -145,17 +145,17 @@ git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard  
 
 
 # 主题源码
-##git clone --depth=1 https://github.com/openwrt-develop/luci-theme-atmaterial.git                       # atmaterials 主题（不推荐）
+git clone --depth=1 https://github.com/openwrt-develop/luci-theme-atmaterial.git                       # atmaterials 主题（不推荐）
 ### git clone --depth 1 https://github.com/uparrows/luci-theme-atmaterial.git                          # atmaterials 主题（不推荐）
 
 ### git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon                                # 重复的Argon主题
 ### git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config                           # 重复的Argon主题
 
-## git clone --depth 1 https://github.com/gngpp/luci-theme-design.git					                   # 黑暗主题，   针对移动端优化
-###git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
+git clone --depth 1 https://github.com/gngpp/luci-theme-design.git					                   # 黑暗主题，   针对移动端优化
+git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
 
-##git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
-##git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
+git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
+git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
 
 ### git clone --depth 1 https://github.com/sirpdboy/luci-theme-opentopd                                  # 橙色主题
 ### git clone --depth 1 https://github.com/kenzok8/luci-theme-ifit ifit && mv -n ifit/luci-theme-ifit ./;rm -rf ifit
