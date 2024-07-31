@@ -223,6 +223,8 @@ jobs:
         
         cd $GITHUB_WORKSPACE/${{matrix.target}}            ## 进入到main目录内
         
+        ps aux | grep git
+        
         if git status --porcelain | grep .; then           ## 判断！ 当插件有更新差异时，提交，
           git add .
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
