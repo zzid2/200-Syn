@@ -33,6 +33,7 @@ env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
   CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
+  REPO_FORMER: former                                  ## 旧版插件分支（默认即可）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
   
@@ -79,17 +80,41 @@ jobs:
         sudo timedatectl set-timezone "$TZ"                                         ## 设置时区为上海
         
         
+    - name: 下载former分支                    ## Clone packages
+      run: |
+        # pwd && ls
+        
+        git clone -b $REPO_FORMER $CangKu_URL $REPO_FORMER || {
+            echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
+            mkdir $REPO_FORMER;
+            cd $REPO_FORMER;
+            git init;                                                                 ## 初始化一个新的Git仓库
+            git config --global init.defaultBranch $REPO_FORMER;                      ## 设置全局默认分支名称
+            git branch -M $REPO_FORMER;                                               ## 重命名当前分支为指定分支
+            git checkout -b $REPO_FORMER;                                             ## 创建并切换到指定分支
+            cd ..;                                                                    ## 返回上级目录
+        }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        
+        cd $REPO_FORMER
+        
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}
+        
+        git rm -r --cache * >/dev/null 2>&1 &
+        
+        echo "这是一个存放删库的目录" > former.txt
         
         
-    - name: 首次克隆旧版插件                    ## Clone packages
+    - name: 下载main分支                    ## Clone packages
       run: |
         # pwd && ls
         
         
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}}_former || {
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || {
             echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
-            mkdir ${{matrix.target}}_former;
-            cd ${{matrix.target}}_former;
+            mkdir ${{matrix.target}};
+            cd ${{matrix.target}};
             git init;                                                                 ## 初始化一个新的Git仓库
             git config --global init.defaultBranch $REPO_BRANCH;                      ## 设置全局默认分支名称
             git branch -M $REPO_BRANCH;                                               ## 重命名当前分支为指定分支
@@ -97,41 +122,25 @@ jobs:
             cd ..;                                                                    ## 返回上级目录
         }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
         
-        
-        cd ${{matrix.target}}_former                                                       ## 进入名称为 main 的目录内；
+        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
         
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
-        # rm -rf .git
+        
         git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
-        # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1
-        echo "这是一个存放删库的目录" > former.txt
         
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1
         
-        
-
-        
-        
-        
-        
-        
-        
-        
-        
-    - name: 二次克隆新版插件                    ## Clone packages
-      run: |
-        # pwd && ls
-        
-        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
-        
-        mkdir -p main
-        cp -rf ${{matrix.target}}_former/.git main
-        cd main
+        # mkdir -p main
+        # cp -rf ${{matrix.target}}_former/.git main
+        # cd main
         
         # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
-        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         
+        ## 第二次下载最新版插件
+        bash /$GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
         bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
         bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
@@ -173,18 +182,19 @@ jobs:
         
         
         
-    - name: 比较和删除重复子目录
+    - name: 整理重复子目录
       run: |
-        # 获取 main_former 和 main 的子目录列表
-        main_former_dirs=$(find main_former -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        main_new_dirs=$(find main -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        $REPO_FORMER=$(find $REPO_FORMER -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)                    ## former目录
         
-        # 找到重复的子目录
-        duplicate_subdirs=$(echo "$main_former_dirs" | grep -xF -f <(echo "$main_new_dirs"))
-        # 删除 main_former 中的重复子目录
-        for subdir in $duplicate_subdirs; do
-          rm -rf "main_former/$subdir"
-          echo "删除重复目录: main_former/$subdir"
+        ${{matrix.target}}=$(find ${{matrix.target}} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)        ## main目录
+        
+        repeat_dirs=$(echo "$main_former_dirs" | grep -xF -f <(echo "${{matrix.target}}"))                         ## 重复的子目录
+        
+        for subdir in $repeat_dirs; do
+            if [ "$subdir" != ".git" ]; then
+                rm -rf "$REPO_FORMER/$subdir"
+                echo "删除重复目录: $REPO_FORMER/$subdir"
+            fi
         done
         
         
@@ -200,7 +210,7 @@ jobs:
       
 
         
-    - name: 上传main 主分支   ## Upload
+    - name: 推送上传插件   ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
@@ -214,15 +224,23 @@ jobs:
           cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
         fi
         
+        
         cd $GITHUB_WORKSPACE/${{matrix.target}}            ## 进入到main目录内
-        
-        # ps aux | grep git
-        
         if git status --porcelain | grep .; then           ## 判断！ 当插件有更新差异时，提交，
-          rm -f /home/runner/work/200-Syn/200-Syn/main/.git/index.lock           ## 解锁文件
           git add .
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}     ## 上传仓库的地址（新创建的仓库）
+        else
+          echo "nothing to commit"                         ## 反之提示： “没有什么可提交的”
+          exit 0
+        fi || exit 0
+        
+        
+        cd $GITHUB_WORKSPACE/$REPO_FORMER            ## 进入到main目录内
+        if git status --porcelain | grep .; then           ## 判断！ 当插件有更新差异时，提交，
+          git add .
+          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
+          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER     ## 上传仓库的地址（新创建的仓库）
         else
           echo "nothing to commit"                         ## 反之提示： “没有什么可提交的”
           exit 0
