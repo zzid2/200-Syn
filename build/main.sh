@@ -53,8 +53,8 @@ git clone --depth 1 https://github.com/fw876/helloworld luci-app-ssr-plus							
 
 git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
 
-## git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
-## mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
+git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
+mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
 
 git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git                                           # 解锁网易云音乐
 ### https://github.com/immortalwrt/luci-app-unblockneteasemusic.git 
@@ -63,12 +63,12 @@ git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot.git            
 ### git clone --depth 1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush.git                                                          # luci-app-wechatpush   （微信/Telegram）推送插件
 
 
-## git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
+git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok78/luci-app-adguardhome																			# Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok8/wall.git && mv -n wall/{adguardhome,filebrowser,gost} ./; rm -rf wall			  	            # 保留：Adguardhome filebrowser（网盘） gost（gost VPN隧道）
 
-## git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
-## mv alist luci-app-alist                                                         # 移动alist文件
+git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
+mv alist luci-app-alist                                                         # 移动alist文件
 ### https://github.com/lmq8267/luci-app-alist
 
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman               # Docker容器管理
