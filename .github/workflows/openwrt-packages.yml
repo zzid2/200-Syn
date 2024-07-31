@@ -81,7 +81,7 @@ jobs:
         
         
         
-    - name: 克隆旧版插件                    ## Clone packages
+    - name: 首次克隆旧版插件                    ## Clone packages
       run: |
         # pwd && ls
         
@@ -126,7 +126,7 @@ jobs:
         chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         
         mkdir -p main
-        mv ${{matrix.target}}_former/.git main
+        cp -rf ${{matrix.target}}_former/.git main
         cd main
         
         # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
@@ -208,7 +208,7 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
-    - name: 上传   ## Upload
+    - name: 上传main分支   ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
@@ -236,7 +236,21 @@ jobs:
           exit 0
         fi || exit 0
         
-        
+    - name: 上传former分支   ## Upload
+      env: 
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
+      run: |
+        cd $GITHUB_WORKSPACE/${{matrix.target}}_former            ## 进入到main目录内
+        if git status --porcelain | grep .; then           ## 判断！ 当插件有更新差异时，提交，
+          rm -f /home/runner/work/200-Syn/200-Syn/main/.git/index.lock           ## 解锁文件
+          git add .
+          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
+          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:former     ## 上传仓库的地址（新创建的仓库）
+        else
+          echo "nothing to commit"                         ## 反之提示： “没有什么可提交的”
+          exit 0
+        fi || exit 0
+      
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
