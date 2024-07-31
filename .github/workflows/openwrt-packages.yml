@@ -202,7 +202,7 @@ jobs:
     - name: 上传bin目录(全部固件+ipk)               ## Upload bin directory
       uses: actions/upload-artifact@v4              ## https://github.com/actions/upload-artifact
       with:
-        name: main_former_${{ env.date1 }}     # 文件名称
+        name: main_former    # 文件名称
         path: ${{ github.workspace }}
         
         
