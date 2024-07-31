@@ -190,7 +190,7 @@ jobs:
         ${{matrix.target}}=$(find ${{matrix.target}} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)        ## main目录
         echo "${{matrix.target}}=${{matrix.target}}" >> $GITHUB_ENV
         
-        repeat_dirs=$(echo "$main_former_dirs" | grep -xF -f <(echo "${{matrix.target}}"))                         ## 重复的子目录
+        repeat_dirs=$(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))                         ## 重复的子目录
         
         for subdir in $repeat_dirs; do
             if [ "$subdir" != ".git" ]; then
