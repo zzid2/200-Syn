@@ -31,7 +31,7 @@ on:
       
 env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-100.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   REPO_FORMER: former                                  ## 旧版插件分支（默认即可）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
@@ -80,8 +80,34 @@ jobs:
         sudo timedatectl set-timezone "$TZ"                                         ## 设置时区为上海
         
         
+    - name: 下载 former 分支                    ## Clone packages
+      run: |
+        # pwd && ls
         
-    - name: 下载 ${{matrix.target}} 分支                    ## Clone packages
+        git clone -b $REPO_FORMER $CangKu_URL $REPO_FORMER || {
+            echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
+            mkdir $REPO_FORMER;
+            cd $REPO_FORMER;
+            git init;                                                                 ## 初始化一个新的Git仓库
+            git config --global init.defaultBranch $REPO_FORMER;                      ## 设置全局默认分支名称
+            git branch -M $REPO_FORMER;                                               ## 重命名当前分支为指定分支
+            git checkout -b $REPO_FORMER;                                             ## 创建并切换到指定分支
+            cd ..;                                                                    ## 返回上级目录
+        }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        
+        cd $REPO_FORMER
+        
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}
+        
+        git rm -r --cache * >/dev/null 2>&1 &
+        
+        echo "这是一个存放删库的目录" > former.txt
+        
+        
+        
+    - name: 下载 main 分支                    ## Clone packages
       run: |
         # pwd && ls
         
@@ -96,6 +122,8 @@ jobs:
             git checkout -b $REPO_BRANCH;                                             ## 创建并切换到指定分支
             cd ..;                                                                    ## 返回上级目录
         }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
+        rsync -av --exclude='.git' ${{matrix.target}}/ $REPO_FORMER/                  ## 同步 main 目录内所有文件 到 former 目录内（但排除.git目录）
+        
         
         chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
@@ -155,32 +183,6 @@ jobs:
         
 
         
-    - name: 下载 $REPO_FORMER 分支                    ## Clone packages
-      run: |
-        # pwd && ls
-        
-        git clone -b $REPO_FORMER $CangKu_URL $REPO_FORMER || {
-            echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
-            mkdir $REPO_FORMER;
-            cd $REPO_FORMER;
-            git init;                                                                 ## 初始化一个新的Git仓库
-            git config --global init.defaultBranch $REPO_FORMER;                      ## 设置全局默认分支名称
-            git branch -M $REPO_FORMER;                                               ## 重命名当前分支为指定分支
-            git checkout -b $REPO_FORMER;                                             ## 创建并切换到指定分支
-            cd ..;                                                                    ## 返回上级目录
-        }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
-        
-        cd $REPO_FORMER
-        
-        rm -rf {LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}
-        
-        git rm -r --cache * >/dev/null 2>&1 &
-        
-        echo "这是一个存放删库的目录" > former.txt
-        
-        
         
     - name: 删除重复子目录
       env:
@@ -217,7 +219,7 @@ jobs:
       
 
         
-    - name: 推送 ${{matrix.target}} 分支              ## Upload
+    - name: 推送 main 分支              ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
@@ -252,7 +254,7 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
-    - name: 推送 $REPO_FORMER 分支   ## Upload
+    - name: 推送 former 分支   ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
