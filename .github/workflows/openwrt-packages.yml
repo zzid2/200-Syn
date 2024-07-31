@@ -11,7 +11,7 @@ on:
     inputs:
       ssh:                         ## 做判断时用的ID名称（可更改）  
         description: 'SSH远程'     ## 工作流_菜单提示框的名称
-        required: true
+        required: false
         default: 'true-false'      ## 输入：true=开启 false=关闭
       packages:                                        ## 做判断时用的ID名称（可更改）  
         description: '更新插件'                        ## 工作流_菜单提示框的名称
@@ -127,26 +127,26 @@ jobs:
         
         
         
-    # - name: 二次克隆新版插件                    ## Clone packages
-      # run: |
-        # # pwd && ls
+    - name: 二次克隆新版插件                    ## Clone packages
+      run: |
+        # pwd && ls
         
-        # chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         
-        # mkdir -p main
-        # mv ${{matrix.target}}_former/.git main
-        # cd main
+        mkdir -p main
+        mv ${{matrix.target}}_former/.git main
+        cd main
         
-        # # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
-        # $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
+        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         
-        # bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
-        # bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
-        # bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
         
-        # rm -rf {LICENSE,README,README.md,README_en.md}
-        # rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
 
         
@@ -203,8 +203,7 @@ jobs:
       uses: actions/upload-artifact@v4              ## https://github.com/actions/upload-artifact
       with:
         name: main_former_${{ env.date1 }}     # 文件名称
-        path: |                # bin目录路径
-          ${{ github.workspace }}
+        path: ${{ github.workspace }}
         
         
         
