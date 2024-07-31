@@ -197,13 +197,10 @@ jobs:
         name: main_former    # 文件名称
         path: ${{ github.workspace }}
         
-        
-        
-        
+      
 
         
-        
-    - name: 上传main分支   ## Upload
+    - name: 上传main 主分支   ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
@@ -230,6 +227,17 @@ jobs:
           echo "nothing to commit"                         ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
+
+
+
+        
+    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        
         
     - name: 上传former分支   ## Upload
       env: 
@@ -246,14 +254,9 @@ jobs:
           exit 0
         fi || exit 0
       
-        
-    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
+
+
+
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
