@@ -11,7 +11,7 @@ on:
     inputs:
       ssh:                         ## 做判断时用的ID名称（可更改）  
         description: 'SSH远程'     ## 工作流_菜单提示框的名称
-        required: false
+        required: true
         default: 'true-false'      ## 输入：true=开启 false=关闭
       packages:                                        ## 做判断时用的ID名称（可更改）  
         description: '更新插件'                        ## 工作流_菜单提示框的名称
@@ -80,19 +80,10 @@ jobs:
         
         
         
-    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
-        
-        
-    - name: 克隆软件包                    ## Clone packages
+    - name: 克隆旧版插件                    ## Clone packages
       run: |
         # pwd && ls
-        
         
         
         git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}}_former || {
@@ -117,24 +108,45 @@ jobs:
         # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1
         echo "这是一个存放删库的目录" > former.txt
         
-        cd $GITHUB_WORKSPACE
         
-        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         
-        mkdir -p main
-        mv ${{matrix.target}}_former/.git main
-        cd main
         
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
-        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         
-        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
-        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
-        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
-        rm -rf {LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
+        
+        
+        
+        
+        
+        
+        
+        
+    # - name: 二次克隆新版插件                    ## Clone packages
+      # run: |
+        # # pwd && ls
+        
+        # chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        
+        # mkdir -p main
+        # mv ${{matrix.target}}_former/.git main
+        # cd main
+        
+        # # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
+        # $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        
+        # bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
+        # bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
+        # bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        
+        # rm -rf {LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
 
         
@@ -165,6 +177,10 @@ jobs:
         # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
         # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
         
+
+        
+        
+        
     - name: 比较和删除重复子目录
       run: |
         # 获取 main_former 和 main 的子目录列表
@@ -186,11 +202,9 @@ jobs:
     - name: 上传bin目录(全部固件+ipk)               ## Upload bin directory
       uses: actions/upload-artifact@v4              ## https://github.com/actions/upload-artifact
       with:
-        name: Bin_${{ env.NAME2 }}${{ env.NAME1 }}_${{ env.date }}     # 文件名称
+        name: main_former_${{ env.date1 }}     # 文件名称
         path: |                # bin目录路径
           ${{ github.workspace }}
-          
-          ./main_former
         
         
         
