@@ -39,7 +39,7 @@ rm -rf $1
 ### mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
 ### git clone --depth 1 https://github.com/jerrykuku/lua-maxminddb.git																								  # luci-app-bypass插件的其中一个依赖包
 
-git clone --depth 1 https://github.com/vernesong/OpenClash.git && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash                       # OenClash小猫咪
+## git clone --depth 1 https://github.com/vernesong/OpenClash.git && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash                       # OenClash小猫咪
 ### git clone --depth 1 https://github.com/hubbylei/luci-app-clash.git
 ### https://github.com/frainzy1477/luci-app-clash
 
@@ -51,12 +51,12 @@ git clone --depth 1 https://github.com/fw876/helloworld luci-app-ssr-plus							
 ### git clone --depth 1 https://github.com/fw876/helloworld && mv -n helloworld/{lua-neturl,shadow-tls,tuic-client,luci-app-ssr-plus} ./ ; rm -rf helloworld   # 保留：luci-app-ssr-plus + tuic-client + shadow-tls
 ### mv {lua-neturl,shadow-tls,tuic-client} luci-app-ssr-plus                        # 移动 tuic-client + shadow-tls 文件
 
-git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
+###git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
 
 ### git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
 ### mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
 
-git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git                                           # 解锁网易云音乐
+###git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git                                           # 解锁网易云音乐
 ### https://github.com/immortalwrt/luci-app-unblockneteasemusic.git 
 
 git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot.git                                                                            # luci-app-pushbot       全能推送插件
