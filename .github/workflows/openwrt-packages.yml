@@ -174,7 +174,7 @@ jobs:
         
     - name: 删除重复子目录
       run: |
-        
+        echo "REPO_FORMER=former" >> $GITHUB_ENV
         for item in ${{matrix.target}}/*; do                                                                           ## 遍历 main 目录内所有文件目录，
             if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                    ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
             rm -rf "$REPO_FORMER/$(basename "$item")"                                                                  ## 删除 former 目录内重复的子目录；
