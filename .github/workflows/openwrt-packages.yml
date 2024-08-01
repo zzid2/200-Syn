@@ -35,7 +35,7 @@ env:                                                   ## 全局变量
   REPO_BRANCH: main                                    ## 主要更新分支
   REPO_FORMER: former                                  ## 旧版删库分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
-  date_BAK: $(date +%m.%d)                             ## 时间格式：08.01
+  date_BAK: ${{ steps.date.outputs.date_BAK }}         ## 时间格式：08.01
   
 jobs:
   build-luci-app:                                      ## 此脚本的任务名称（可自定义）
