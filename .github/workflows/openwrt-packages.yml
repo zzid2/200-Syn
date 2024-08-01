@@ -231,10 +231,17 @@ jobs:
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                  ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
         else
-          echo "nothing to commit"                                                                  ## 反之提示： “没有什么可提交的”
+          echo "nothing to commit"                                                                 ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
-
+        
+        
+        
+- name: 创建Git标签
+      run: |
+        
+        git tag -a ${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
+        git push origin ${{ env.date }}                                                              ## 推送标签
 
 
     - name: 发布固件                         ## 自动发布固件 releases主页下载
