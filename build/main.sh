@@ -33,22 +33,22 @@ rm -rf $1
 }
 
 
-# git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
-# mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
+git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
+mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
 
-# git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
-
-
-# git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
-# mv alist luci-app-alist                                                         # 移动alist文件
-
-# git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
 
 
-# git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
-# mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
+git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
+mv alist luci-app-alist                                                         # 移动alist文件
 
-# git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
+git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+
+
+git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
+mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
+
+git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
 
 
 
