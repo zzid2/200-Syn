@@ -256,7 +256,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}        ## 最大字号的标题
-        tag_name: "v${{ env.date }}"            ## 左侧标签页时间
+        tag_name: "${{ env.date }}"            ## 左侧标签页时间
         body: |                              ## 文本显示
             ☆  源码 : ${{ env.REPO_URL }}
             ☆  分支 : ${{ env.REPO_BRANCH }}
@@ -270,7 +270,7 @@ jobs:
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
         files: |
-            ${{env.REPO_FORMER}}_${{ env.date }}.zip        ## 上传former目录
+            former_${{ env.date }}.zip        ## 上传former目录${{env.REPO_FORMER}}
             ${{matrix.target}}_${{ env.date }}.zip          ## 上传main目录
         
         
