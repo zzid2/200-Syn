@@ -27,8 +27,8 @@ on:
     paths:                                             ## 当指定文件“修改变动时” 触发编译
       - '.github/workflows/openwrt-packages.yml'       ## 默认是"openwrt-packages.yml"文件变动时 触发编译
       - 'main.sh'                                      ## 默认是"openwrt-packages.yml"文件变动时 触发编译
-    tags:
-      - 'v*.*.*'                                       ## 监听所有符合 v*.*.* 格式的标签推送
+    # tags:
+      # - 'v*.*.*'                                       ## 监听所有符合 v*.*.* 格式的标签推送
       
 env:                                                   ## 全局变量
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
@@ -238,15 +238,15 @@ jobs:
         
         
         
-    - name: 创建Git标签
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      run: |
+    # - name: 创建Git标签
+      # env:
+        # GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      # run: |
         
-        git tag -a v${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
-        git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}"   ## 设置远程仓库 URL
+        # git tag -a v${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
+        # git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}"   ## 设置远程仓库 URL
         
-        git push origin v${{ env.date }}                                                              ## 推送标签
+        # git push origin v${{ env.date }}                                                              ## 推送标签
         
 
     - name: 发布固件                         ## 自动发布固件 releases主页下载
@@ -269,7 +269,7 @@ jobs:
             ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
-        files: ${{matrix.target}}_${{ env.date }}.zip         ## 上传生成的所有固件
+        files: main_.zip         ## 上传生成的所有固件
         
         
         
