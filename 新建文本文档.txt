@@ -1,7 +1,0 @@
-echo "# luci-120" >> README.md       ## 创建README文件并初始化Git仓库
-git init                                                 ## 初始化一个新的Git仓库
-git add README.md                             ## 添加文件到Git仓库并提交到暂存区
-git commit -m "first commit"            ## 提交暂存区的文件到本地仓库，并附加提交信息“first commit”
-git branch -M main                         ## 将当前分支重命名为main
-git remote add origin https://github.com/zzid2/luci-120.git      ## 将远程仓库添加到本地Git配置中，并命名为origin。
-git push -u origin main            ## 将本地main分支的所有提交推送到远程仓库的main分支

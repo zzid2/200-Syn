@@ -32,10 +32,9 @@ on:
 env:                                                   ## 全局变量
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
   CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
-  REPO_BRANCH: main                                    ## 主要更新分支
-  REPO_FORMER: former                                  ## 旧版删库分支
+  REPO_BRANCH: main                                    ## 主要更新 分支
+  REPO_FORMER: former                                  ## 旧版删库 分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
-  # date_BAK: ${{ steps.date.outputs.date_BAK }}         ## 时间格式：08.01
   
 jobs:
   build-luci-app:                                      ## 此脚本的任务名称（可自定义）
@@ -62,20 +61,33 @@ jobs:
         
         AUTHOR_ID=$(echo $CangKu_URL | awk -F'/' '{print $(NF-1)}')                                ## 仓库作者ID，如：zzid2
         echo "AUTHOR_ID=$AUTHOR_ID" >> $GITHUB_ENV                                                 ## 仓库作者ID，写入到变量中
+        
         CangKu_ID=$(echo $CangKu_URL | awk -F'/' '{print $NF}' | sed 's/.git//')                   ## 仓库项目ID，如：120
         echo "CangKu_ID=$CangKu_ID" >> $GITHUB_ENV                                                 ## 仓库项目ID，写入到变量中
+        
         CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 当前仓库的名称
         echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
-        echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## = date1 变量时间格式: 2021年01月02号-13点10分
+        
+        echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## 时间变量格式: 2021年01月02号-13点10分
+        echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间变量格式：08.01
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
-        echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间格式：08.01
+        
+        git config --global user.name "actions-user"                                               ## 提交名称
+        git config --global user.email "$AUTHOR_ID@users.noreply.github.com"                       ## 提交Github仓库的电子邮件地址（默认自己仓库）
+        sudo timedatectl set-timezone "$TZ"                                                        ## 设置时区为上海
         
         ## 终端添加中文
         sudo apt-get install -y language-pack-zh-hans                                              ## 安装中文语言包
         echo "LANG=zh_CN.UTF-8" >> $GITHUB_ENV                                                     ## 加入中文语言包 的变量，会持续显示中文语言；
-        git config --global user.name "actions-user"                                               ## 提交名称
-        git config --global user.email "$AUTHOR_ID@users.noreply.github.com"                       ## 提交Github仓库的电子邮件地址（默认自己仓库）
-        sudo timedatectl set-timezone "$TZ"                                                        ## 设置时区为上海
+        
+        
+        
+    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
         
@@ -169,7 +181,8 @@ jobs:
             fi
         done
         
-        
+        zip -r $REPO_FORMER_${{ env.date }}.zip $REPO_FORMER                                       ## 压缩 former 目录，用于发布主页
+        zip -r ${{matrix.target}}_${{ env.date }}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
@@ -207,14 +220,6 @@ jobs:
         
         
         
-    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
-        
     - name: 推送 former 分支                           ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
@@ -232,6 +237,21 @@ jobs:
 
 
 
+        
+    - name: 发布到主页                       ## 自动发布固件 releases主页下载
+      uses: softprops/action-gh-release@v2   ## https://github.com/softprops/action-gh-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}        ## 最大字号的标题
+        tag_name: ${{ env.date }}            ## 左侧标签页时间
+        body: |                              ## 文本显示
+            ☆  已经删库的源码
+        files: |
+            $REPO_FORMER_${{ env.date }}.zip
+            ${{matrix.target}}_${{ env.date }}.zip
+        
+        
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
