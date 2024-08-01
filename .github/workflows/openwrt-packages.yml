@@ -243,7 +243,8 @@ jobs:
       run: |
         
         git tag -a v${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
-        git remote set-url origin https://github-actions:${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}   ## 设置远程仓库 URL
+        git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}"   ## 设置远程仓库 URL
+        
         git push origin v${{ env.date }}                                                              ## 推送标签
         
 
