@@ -240,8 +240,9 @@ jobs:
     - name: 创建Git标签
       run: |
         
-        git tag -a ${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
-        git push origin ${{ env.date }}                                                              ## 推送标签
+        git tag -a v${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
+        
+        git push origin v${{ env.date }}                                                              ## 推送标签
 
 
     - name: 发布固件                         ## 自动发布固件 releases主页下载
@@ -250,7 +251,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
-        name: ${{ env.date1 }} 「 ${{matrix.target}} 」固件#${{env.Run_number}}        ## 最大字号的标题
+        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}        ## 最大字号的标题
         tag_name: ${{ env.date }}            ## 左侧标签页时间
         body: |                              ## 文本显示
             ☆  源码 : ${{ env.REPO_URL }}
