@@ -126,7 +126,7 @@ jobs:
         ## 比较main和former目录，在重复的former子目录后追加后缀；
         for item in ${{matrix.target}}/*; do                                                       ## 遍历 main 目录内所有文件目录，
             if [ -d "$REPO_FORMER/$(basename "$item")" ]; then                                     ## 判断 former 目录内 是否有与main目录内重复的（子目录），
-            mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak${{ env.date_BAK }}"      ## 把重复的 子目录追加后缀名；
+            mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"      ## 把重复的 子目录追加后缀名；
             fi
         done
         
