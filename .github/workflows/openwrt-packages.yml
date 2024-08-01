@@ -257,7 +257,7 @@ jobs:
             ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
-        files: ${{ env.FIRMWARE }}/*         ## 上传生成的所有固件
+        files: ${{matrix.target}}_${{ env.date }}.zip         ## 上传生成的所有固件
         
         
         
