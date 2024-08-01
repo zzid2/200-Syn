@@ -269,7 +269,7 @@ jobs:
             ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
-        files: main_.zip         ## 上传生成的所有固件
+        files: ./main_.zip         ## 上传生成的所有固件
         
         
         
