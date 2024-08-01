@@ -69,6 +69,7 @@ jobs:
         CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 当前仓库的名称
         echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
         
+        echo "date=$(date "+%Y.%m.%d-%H%M")" >> $GITHUB_ENV                                        ## = date 变量时间格式: 2021.01.02-1310   上传至github空间的格式，发布固件到 左侧标签的格式，（Tags左侧标签时间格式）
         echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## 时间变量格式: 2021年01月02号-13点10分
         echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间变量格式：08.01
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
@@ -270,7 +271,9 @@ jobs:
             ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
-        files: main_.zip         ## 上传生成的所有固件
+        files: |
+            ${{env.REPO_FORMER}}_${{ env.date }}.zip
+            ${{matrix.target}}_${{ env.date }}.zip
         
         
         
