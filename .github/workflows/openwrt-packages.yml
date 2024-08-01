@@ -27,8 +27,7 @@ on:
     paths:                                             ## 当指定文件“修改变动时” 触发编译
       - '.github/workflows/openwrt-packages.yml'       ## 默认是"openwrt-packages.yml"文件变动时 触发编译
       - 'main.sh'                                      ## 默认是"openwrt-packages.yml"文件变动时 触发编译
-    # tags:
-      # - 'v*.*.*'                                       ## 监听所有符合 v*.*.* 格式的标签推送
+      
       
 env:                                                   ## 全局变量
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
@@ -187,7 +186,6 @@ jobs:
         zip -r ${{matrix.target}}_${{ env.date }}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
         
     - name: 上传全部源码                                                                           ## Upload bin directory
-      id: Upload
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: former_${{ env.date_BAK }}               ## 文件名称
@@ -272,8 +270,8 @@ jobs:
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
         files: |
-            ${{env.REPO_FORMER}}_${{ env.date }}.zip
-            ${{matrix.target}}_${{ env.date }}.zip
+            ${{env.REPO_FORMER}}_${{ env.date }}.zip        ## 上传former目录
+            ${{matrix.target}}_${{ env.date }}.zip          ## 上传main目录
         
         
         
