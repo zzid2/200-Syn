@@ -32,10 +32,10 @@ on:
 env:                                                   ## 全局变量
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
   CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
-  REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
-  REPO_FORMER: former                                  ## 旧版插件分支（默认即可）
+  REPO_BRANCH: main                                    ## 主要更新分支
+  REPO_FORMER: former                                  ## 旧版删库分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
-  
+  date_BAK: $(date +%m.%d)                             ## 时间格式：08.01
   
 jobs:
   build-luci-app:                                      ## 此脚本的任务名称（可自定义）
@@ -104,8 +104,6 @@ jobs:
         
         
     - name: 下载 main 分支                             ## Clone packages
-      env:                                             ## 步骤变量，非全局
-        date_BAK: $(date +%m.%d)                                                                        ## BAK 后面追加时间变量；
       run: |
         # pwd && ls
         
