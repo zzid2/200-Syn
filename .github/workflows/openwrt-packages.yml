@@ -67,7 +67,6 @@ jobs:
         CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 当前仓库的名称
         echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
         echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## = date1 变量时间格式: 2021年01月02号-13点10分
-        # echo "date_BAK=$(date +%m.%d)" >> $GITHUB_ENV
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
         
         ## 终端添加中文
@@ -106,9 +105,7 @@ jobs:
         
     - name: 下载 main 分支                             ## Clone packages
       env:                                             ## 步骤变量，非全局
-        # SRC_DIR: '${{matrix.target}}/'
-        # DEST_DIR: '$REPO_FORMER/'
-        date_BAK: $(date +%m.%d)
+        date_BAK: $(date +%m.%d)                                                                        ## BAK 后面追加时间变量；
       run: |
         # pwd && ls
         
@@ -121,137 +118,70 @@ jobs:
             cd ..;
         }
         
-        git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git $REPO_FORMER/luci-app-poweroffdevice
+        
         
         ## 比较main和former目录，在重复的former子目录后追加后缀；
-        for item in ${{matrix.target}}/*; do                                                       ## 遍历 main 目录内所有文件目录，
-            if [ -d "$REPO_FORMER/$(basename "$item")" ]; then                                     ## 判断 former 目录内 是否有与main目录内重复的（子目录），
-            mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"      ## 把重复的 子目录追加后缀名；
+        for item in ${{matrix.target}}/*; do                                                                          ## 遍历 main 目录内所有文件目录，
+            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+                mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"      ## 重命名 former 目录内重复的子目录，追加后缀名；
+                echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"
             fi
         done
+        
+        
         
         rsync -av --exclude='.git' ${{matrix.target}}/ $REPO_FORMER/                               ## main目录同步到former目录，并排除 .git目录
         
         
-        
-        
-        
-        
         chmod +x build/${{matrix.target}}.sh                                                       ## build目录内的main.sh脚本  增加可执行的权限
-        cd ${{matrix.target}}                                                                      ## 进入名称为 main 的目录内；
+        cd ${{matrix.target}}                                                                      ## cd 进入 main 目录
+        
         
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
         
-        git rm -r --cache * >/dev/null 2>&1 &                                                      ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
         
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1                      ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
-        
-        
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1                      ## 删除 当前目录内所有文件，但排除"build"目录；
         
         
         
-        
-        ## 第二次下载最新版插件
+        ## 第二次单独下载最新版插件
         bash /$GITHUB_WORKSPACE/build/${{matrix.target}}.sh                                        ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         bash /$GITHUB_WORKSPACE/build/convert_translation.sh                                       ## 执行convert_translation.sh  全部改成zh-cn中文
         bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                                    ## 执行create_acl_for_luci.sh  输入报错提示
         bash /$GITHUB_WORKSPACE/build/Modify.sh                                                    ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
         
+        
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
         
-
-        
-        
-        
-        
-        # 在线手动执行步骤
-        # cd .github               ## 进入隐藏文件
-        
-        # chmod +x build/main.sh
-        # git clone -b main https://github.com/zzid2/120.git main
-        
-        # mkdir -p main
-        # touch main/120.txt
-        # echo "123456" > "main/120.txt"
-        # cat main/120.txt
-        
-        # cd main
-        # git rm -r --cache * >/dev/null 2>&1 &
-        # rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
-        # cd ../
-        # bash build/main.sh
-        # bash build/convert_translation.sh
-        # bash build/create_acl_for_luci.sh -a
-        # bash build/Modify.sh
-        # cd main
-        # git add .
-        # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
-        # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
-        
-
         
         
     - name: 删除重复子目录
-      env:          ## 步骤变量
-        $REPO_FORMER: $(find $REPO_FORMER -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)                        ## former目录 
-        ${{matrix.target}}: $(find ${{matrix.target}} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)            ## main目录
-        repeat_dirs: $(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))"
       run: |
         
-        # echo "REPO_FORMER=$REPO_FORMER" >> $GITHUB_ENV
-        
-        
-        # echo "${{matrix.target}}=${{matrix.target}}" >> $GITHUB_ENV
-        
-        # repeat_dirs=$(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))                                ## 重复的子目录
-        # echo "repeat_dirs=$(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))" >> $GITHUB_ENV
-        
-        
-        
-        
-        
-        
-        # for subdir in $repeat_dirs; do
-            # if [ "$subdir" != ".git" ]; then
-                # rm -rf "$REPO_FORMER/$subdir"
-                # echo "删除重复目录: $REPO_FORMER/$subdir"
-            # fi
-        # done
-        
-        
-        
-        
-        
-        
-        
-        for dir in ${{matrix.target}}/*/; do                                                       ## 搜索 main 目录内所有一级子目录
-        dir_name=$(basename "$dir")                                                                ## 获取子目录的名称
-        
-        if [[ "$dir_name" != ".git" && -d "former/$dir_name" ]]; then                              ## 确保不在.git 目录内，同时排除 .git 目录
-            rm -rf "former/$dir_name"                                                              ## 删除 former 目录中的重复目录
-            echo "删除重复目录: former/$dir_name"
-        fi
+        for item in ${{matrix.target}}/*; do                                                                           ## 遍历 main 目录内所有文件目录，
+            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                    ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+            rm -rf "$REPO_FORMER/$(basename "$item")"                                                                  ## 删除 former 目录内重复的子目录；
+            echo "删除重复项: $REPO_FORMER/$(basename "$item")"
+            fi
         done
-
-        
-        
         
         
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
-        name: former    # 文件名称
+        name: former_${{ env.date_BAK }}               ## 文件名称
         path: ${{ github.workspace }}
         
       
 
         
-    - name: 推送 main 分支              ## Upload
+    - name: 推送 main 分支                             ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
@@ -278,7 +208,7 @@ jobs:
         
         
         
-    - name: SSH链接（到此预计10分钟）                               ## SSH connection to Actions
+    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
       if: github.event.inputs.ssh == 'true'
       env:
@@ -286,7 +216,7 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
-    - name: 推送 former 分支                                                       ## Upload
+    - name: 推送 former 分支                           ## Upload
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
