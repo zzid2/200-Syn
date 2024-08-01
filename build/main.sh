@@ -33,9 +33,25 @@ rm -rf $1
 }
 
 
+# git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
+# mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
 
-git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
-mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
+# git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
+
+
+# git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
+# mv alist luci-app-alist                                                         # 移动alist文件
+
+# git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+
+
+# git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
+# mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
+
+# git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
+
+
+
 
 
 
@@ -51,18 +67,12 @@ git clone --depth 1 https://github.com/fw876/helloworld luci-app-ssr-plus							
 
 git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
 
-git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
-mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
+
 
 git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git                                           # 解锁网易云音乐
 
 git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot.git                                                                            # luci-app-pushbot       全能推送插件
 
-
-git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
-
-git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
-mv alist luci-app-alist                                                         # 移动alist文件
 
 
 
@@ -71,7 +81,6 @@ git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git              
 
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
 
-git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
 
 git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
 
@@ -82,7 +91,7 @@ git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard  
 git clone --depth=1 https://github.com/openwrt-develop/luci-theme-atmaterial.git                       # atmaterials 主题（不推荐）
 
 git clone --depth 1 https://github.com/gngpp/luci-theme-design.git					                   # 黑暗主题，   针对移动端优化
-git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git                                # 黑暗主题设置
+
 
 git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
 git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
