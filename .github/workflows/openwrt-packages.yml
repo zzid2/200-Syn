@@ -237,7 +237,7 @@ jobs:
         
         
         
-- name: 创建Git标签
+    - name: 创建Git标签
       run: |
         
         git tag -a ${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
