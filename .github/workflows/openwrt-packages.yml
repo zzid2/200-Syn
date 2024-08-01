@@ -186,6 +186,7 @@ jobs:
         zip -r ${{matrix.target}}_${{ env.date }}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
         
     - name: 上传全部源码                                                                           ## Upload bin directory
+      id: Upload
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: former_${{ env.date_BAK }}               ## 文件名称
@@ -251,7 +252,7 @@ jobs:
 
     - name: 发布固件                         ## 自动发布固件 releases主页下载
       uses: softprops/action-gh-release@v2   ## https://github.com/softprops/action-gh-release
-      if: steps.previous_step_id.outcome == 'success'
+      if: steps.previous_step_id.Upload == 'success'
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
