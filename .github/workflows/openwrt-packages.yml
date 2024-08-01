@@ -237,29 +237,27 @@ jobs:
 
 
 
-        
-    - name: 发布到主页                       ## 自动发布固件 releases主页下载
+    - name: 发布固件                         ## 自动发布固件 releases主页下载
       uses: softprops/action-gh-release@v2   ## https://github.com/softprops/action-gh-release
+      if: steps.organizer.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
       env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
-        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}        ## 最大字号的标题
+        name: ${{ env.date1 }} 「 ${{matrix.target}} 」固件#${{env.Run_number}}        ## 最大字号的标题
         tag_name: ${{ env.date }}            ## 左侧标签页时间
         body: |                              ## 文本显示
-            ☆  源码 : ${{ github.repository }}
-            ☆  分支 : ${{ github.ref }}
-            ☆  感谢源码作者[ 大神 ]无私分享！
+            ☆  源码 : ${{ env.REPO_URL }}
+            ☆  分支 : ${{ env.REPO_BRANCH }}
+            ☆  感谢源码作者[ ${{ env.ZUOZHE }}大神 ]无私分享！
             
-            🎉 固件下载 ✨
+            🎉 [ ${{matrix.target}} ]固件下载 ✨
             -
             💐 奶牛快传(国内高速🚀下载)： ${{ env.COWTRANSFER_URL }}
             
             ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
             
             🌴 链接有效期为7天，无需注册直接下载 🐤
-        files: |
-            $REPO_FORMER_${{ env.date }}.zip
-            ${{matrix.target}}_${{ env.date }}.zip
+        files: ${{ env.FIRMWARE }}/*         ## 上传生成的所有固件
         
         
         
