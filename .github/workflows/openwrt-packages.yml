@@ -35,7 +35,7 @@ env:                                                   ## 全局变量
   REPO_BRANCH: main                                    ## 主要更新分支
   REPO_FORMER: former                                  ## 旧版删库分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
-  date_BAK: ${{ steps.date.outputs.date_BAK }}         ## 时间格式：08.01
+  # date_BAK: ${{ steps.date.outputs.date_BAK }}         ## 时间格式：08.01
   
 jobs:
   build-luci-app:                                      ## 此脚本的任务名称（可自定义）
@@ -68,6 +68,7 @@ jobs:
         echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
         echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## = date1 变量时间格式: 2021年01月02号-13点10分
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
+        echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间格式：08.01
         
         ## 终端添加中文
         sudo apt-get install -y language-pack-zh-hans                                              ## 安装中文语言包
