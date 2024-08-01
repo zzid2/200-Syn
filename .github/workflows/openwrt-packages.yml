@@ -252,7 +252,7 @@ jobs:
 
     - name: 发布固件                         ## 自动发布固件 releases主页下载
       uses: softprops/action-gh-release@v2   ## https://github.com/softprops/action-gh-release
-      if: steps.previous_step_id.Upload == 'success'
+      if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
