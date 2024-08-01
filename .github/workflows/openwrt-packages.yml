@@ -246,9 +246,17 @@ jobs:
         name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}        ## 最大字号的标题
         tag_name: ${{ env.date }}            ## 左侧标签页时间
         body: |                              ## 文本显示
-            ☆  已经删库的源码
-            -
+            ☆  源码 : ${{ github.repository }}
+            ☆  分支 : ${{ github.ref }}
+            ☆  感谢源码作者[ 大神 ]无私分享！
             
+            🎉 固件下载 ✨
+            -
+            💐 奶牛快传(国内高速🚀下载)： ${{ env.COWTRANSFER_URL }}
+            
+            ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
+            
+            🌴 链接有效期为7天，无需注册直接下载 🐤
         files: |
             $REPO_FORMER_${{ env.date }}.zip
             ${{matrix.target}}_${{ env.date }}.zip
