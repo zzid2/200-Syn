@@ -29,7 +29,7 @@ on:
       - 'main.sh'                                      ## 默认是"openwrt-packages.yml"文件变动时 触发编译
       
       
-env:                                                   ## 全局变量
+env:                                                   ## 全局变量定义
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
   CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 主要更新 分支
@@ -182,8 +182,8 @@ jobs:
             fi
         done
         
-        zip -r $REPO_FORMER_${{ env.date }}.zip $REPO_FORMER                                       ## 压缩 former 目录，用于发布主页
-        zip -r ${{matrix.target}}_${{ env.date }}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
+        zip -r $REPO_FORMER _${{ env.date }}.zip $REPO_FORMER                                       ## 压缩 former 目录，用于发布主页
+        zip -r ${{matrix.target}} _${{ env.date }}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
