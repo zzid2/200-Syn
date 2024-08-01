@@ -29,9 +29,9 @@ on:
       - 'main.sh'                                      ## 默认是"openwrt-packages.yml"文件变动时 触发编译
       
       
-env:
+env:             ## 全局变量，
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-100.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   REPO_FORMER: former                                  ## 旧版插件分支（默认即可）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
@@ -108,6 +108,11 @@ jobs:
         
         
     - name: 下载 main 分支                    ## Clone packages
+      env:                                ## 步骤变量，非全局
+        SRC_DIR: '${{matrix.target}}/'
+        DEST_DIR: '$REPO_FORMER/'
+        BACKUP_SUFFIX: '_bak'
+        DATE_BAK: $(date +%m.%d)
       run: |
         # pwd && ls
         
@@ -123,7 +128,26 @@ jobs:
             cd ..;                                                                    ## 返回上级目录
         }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
         
-        rsync -av --exclude='.git' --backup --suffix=_bak ${{matrix.target}}/ $REPO_FORMER/    ## 同步 main 目录内所有文件（但排除.git目录，如果有重复目录，目录加_bak后缀） 到 former 目录内。
+        
+        
+        
+        
+        
+        ## rsync -av --exclude='.git' --backup --suffix=_bak ${{matrix.target}}/ $REPO_FORMER/    ## 同步 main 目录内所有文件（但排除.git目录，如果有重复目录，目录加_bak后缀） 到 former 目录内。
+        
+        ## 比较main和former目录，如果重复，在重复的former子目录添加后缀
+        for item in ${{matrix.target}}/*; do
+            if [ -d "former/$(basename "$item")" ]; then
+            mv "former/$(basename "$item")" "former/$(basename "$item")_bak${DATE_BAK}"
+            fi
+        done
+        
+        rsync -av --exclude='.git' main/ former/                 ## main目录同步到former目录，并排除 .git目录
+        
+        
+        
+        
+        
         
         chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
@@ -134,13 +158,12 @@ jobs:
         
         git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
         
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
         
-        # mkdir -p main
-        # cp -rf ${{matrix.target}}_former/.git main
-        # cd main
         
-        # rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
+        
+        
+        
         
         ## 第二次下载最新版插件
         bash /$GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
@@ -185,7 +208,7 @@ jobs:
         
         
     - name: 删除重复子目录
-      env:
+      env:          ## 步骤变量
         $REPO_FORMER: $(find $REPO_FORMER -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)                    ## former目录 
         ${{matrix.target}}: $(find ${{matrix.target}} -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)        ## main目录
         repeat_dirs: $(echo "$REPO_FORMER" | grep -xF -f <(echo "${{matrix.target}}"))"
