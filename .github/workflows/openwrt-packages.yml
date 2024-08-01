@@ -182,8 +182,8 @@ jobs:
             fi
         done
         
-        zip -r $REPO_FORMER _ ${{ env.date_BAK }}.zip $REPO_FORMER                                       ## 压缩 former 目录，用于发布主页
-        zip -r ${{matrix.target}} _ ${{ env.date_BAK }}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
+        zip -r $REPO_FORMER.zip $REPO_FORMER                                       ## 压缩 former 目录，用于发布主页
+        zip -r ${{matrix.target}}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
