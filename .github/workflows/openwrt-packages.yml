@@ -181,9 +181,9 @@ jobs:
             fi
         done
         
-        mkdir packages
-        zip -r $REPO_FORMER.zip packages/$REPO_FORMER
-        zip -r ${{matrix.target}}.zip packages/${{matrix.target}}
+        mkdir -p packages
+        tar -czvf packages/former.tar.gz "$REPO_FORMER"
+        tar -czvf packages/main.tar.gz "${{matrix.target}}"
         echo "PACKAGES=$PWD" >> $GITHUB_ENV
         
         
