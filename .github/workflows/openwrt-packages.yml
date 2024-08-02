@@ -256,7 +256,7 @@ jobs:
             ☆  常用插件
             -
             ☆  已经删库留存源码
-        files:
+        files: ${{ env.PACKAGES }}/packages/*
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
