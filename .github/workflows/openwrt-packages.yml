@@ -6,7 +6,6 @@
 
 name: 更新_Luci插件                                    ## Actions工作流的名称
 on:
-  repository_dispatch:                                 ## 存储库调度
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
       ssh:                                             ## 做判断时用的ID名称（可更改）  
@@ -18,7 +17,7 @@ on:
         required: false
         default: 'false'
         
-        
+  # repository_dispatch:                                 ## 存储库_调度触发运行
   schedule:                                            ## 定时触发开始编译(时间设置请看定时编译说明)
     - cron: 0 */6 * * *                                ## 每隔6个小时运行一次
     
@@ -248,7 +247,8 @@ jobs:
 
     - name: 发布固件
       uses: softprops/action-gh-release@v2
-      if: success()
+      if: ${{ github.event.inputs.packages == 'true' }}                                             ## 判断 packages 参数是否为 'true'；
+      # if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
