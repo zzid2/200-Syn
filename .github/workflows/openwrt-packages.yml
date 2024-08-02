@@ -250,6 +250,7 @@ jobs:
             -
         files: |
             former.zip
+            ${{matrix.target}}.zip          ## 上传main目录
 
         
     - name: 删除工作流程运行      ## Delete workflow runs
