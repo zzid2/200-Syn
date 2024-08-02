@@ -13,9 +13,10 @@ on:
         required: false
         default: 'true-false'                          ## 输入：true=开启 false=关闭
       packages:                                        ## 做判断时用的ID名称（可更改）  
-        description: '更新插件'                        ## 工作流_菜单提示框的名称
+        description: '发布主页'                        ## 工作流_菜单提示框的名称
         required: false
         default: 'false'
+        type: boolean                                  ## 将类型设置为布尔类型（复选框）
         
   # repository_dispatch:                                 ## 存储库_调度触发运行
   schedule:                                            ## 定时触发开始编译(时间设置请看定时编译说明)
