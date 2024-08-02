@@ -184,6 +184,9 @@ jobs:
         mkdir packages
         zip -r $REPO_FORMER.zip packages/$REPO_FORMER
         zip -r ${{matrix.target}}.zip packages/${{matrix.target}}
+        echo "PACKAGES=$PWD" >> $GITHUB_ENV
+        
+        
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
@@ -249,9 +252,7 @@ jobs:
         body: |                              ## 文本显示
             ☆  已经删库的源码
             -
-        files: |
-            former.zip
-            ${{matrix.target}}.zip          ## 上传main目录
+        files: ${{ env.PACKAGES }}/*
 
         
     - name: 删除工作流程运行      ## Delete workflow runs
