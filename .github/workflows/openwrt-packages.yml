@@ -242,7 +242,8 @@ jobs:
       if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      with:name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}
+      with:
+        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}
         tag_name: "v1"            ## 左侧标签页时间
         body: |                              ## 文本显示
             ☆  已经删库的源码
