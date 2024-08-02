@@ -68,7 +68,6 @@ jobs:
         CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 当前仓库的名称
         echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
         
-        echo "date=$(date "+%Y.%m.%d-%H%M")" >> $GITHUB_ENV                                        ## = date 变量时间格式: 2021.01.02-1310   上传至github空间的格式，发布固件到 左侧标签的格式，（Tags左侧标签时间格式）
         echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## 时间变量格式: 2021年01月02号-13点10分
         echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间变量格式：08.01
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
@@ -172,9 +171,9 @@ jobs:
         
         
         
-    - name: 整理重复子目录
+    - name: 删除重复子目录
       run: |
-        echo "REPO_FORMER=former" >> $GITHUB_ENV
+        
         for item in ${{matrix.target}}/*; do                                                                           ## 遍历 main 目录内所有文件目录，
             if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                    ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
             rm -rf "$REPO_FORMER/$(basename "$item")"                                                                  ## 删除 former 目录内重复的子目录；
@@ -182,8 +181,8 @@ jobs:
             fi
         done
         
-        zip -r $REPO_FORMER.zip $REPO_FORMER                                       ## 压缩 former 目录，用于发布主页
-        zip -r ${{matrix.target}}.zip ${{matrix.target}}                           ## 压缩 main   目录，用于发布主页
+        zip -r $REPO_FORMER.zip $REPO_FORMER
+        zip -r ${{matrix.target}}.zip ${{matrix.target}}
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
@@ -232,40 +231,25 @@ jobs:
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                  ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
         else
-          echo "nothing to commit"                                                                 ## 反之提示： “没有什么可提交的”
+          echo "nothing to commit"                                                                  ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
         
         
         
-    # - name: 创建Git标签
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      # run: |
-        
-        # git tag -a v${{ env.date }} -m "Release for ${{ env.date }}"                                  ## 创建标签
-        # git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}"   ## 设置远程仓库 URL
-        
-        # git push origin v${{ env.date }}                                                              ## 推送标签
-        
-
     - name: 发布固件                         ## 自动发布固件 releases主页下载
       uses: softprops/action-gh-release@v2   ## https://github.com/softprops/action-gh-release
       if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      with:
-        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}        ## 最大字号的标题
-        tag_name: "${{ env.date }}"            ## 左侧标签页时间
+      with:name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}
+        tag_name: "v1"            ## 左侧标签页时间
         body: |                              ## 文本显示
             ☆  已经删库的源码
             -
-            
         files: |
-            former.zip                 ## 上传former目录${{env.REPO_FORMER}}
-            ${{matrix.target}}.zip          ## 上传main目录
-        
-        
+            former.zip
+
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
