@@ -183,8 +183,8 @@ jobs:
         done
         
         mkdir -p packages
-        tar -czvf packages/former.tar.gz "$REPO_FORMER_${{ env.date_BAK }}"
-        tar -czvf packages/main.tar.gz "${{matrix.target}}_${{ env.date_BAK }}"
+        tar -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"
+        tar -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"
         echo "PACKAGES=$PWD" >> $GITHUB_ENV
         echo "status=success" >>$GITHUB_OUTPUT
         
