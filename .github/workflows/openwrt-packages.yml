@@ -186,7 +186,7 @@ jobs:
         tar -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"
         tar -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"
         echo "PACKAGES=$PWD" >> $GITHUB_ENV
-        echo "status=success" >>$GITHUB_OUTPUT
+        # echo "status=success" >>$GITHUB_OUTPUT
         
         
     - name: 上传全部源码                                                                           ## Upload bin directory
