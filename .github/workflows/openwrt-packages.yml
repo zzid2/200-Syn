@@ -254,7 +254,7 @@ jobs:
             ☆  已经删库的源码
             -
             ☆  已经删库的源码 ${{ env.PACKAGES }}/*
-        files: ${{ env.PACKAGES }}/*
+        files: ${{ env.PACKAGES }}/packages/*
 
         
     - name: 删除工作流程运行      ## Delete workflow runs
