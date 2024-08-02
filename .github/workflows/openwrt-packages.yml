@@ -185,7 +185,7 @@ jobs:
         mkdir -p packages
         tar -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"
         tar -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"
-        cd packages
+        # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV
         
         
