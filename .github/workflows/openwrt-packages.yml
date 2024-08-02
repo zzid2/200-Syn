@@ -12,6 +12,7 @@ on:
         description: 'SSH远程'                         ## 工作流_菜单提示框的名称
         required: false
         default: 'false'                               ## 输入：true=开启 false=关闭
+        type: boolean                                  ## 将类型设置为布尔类型（复选框）
       release:                                         ## 做判断时用的ID名称（可更改）  
         description: '发布主页'                        ## 工作流_菜单提示框的名称
         required: false
