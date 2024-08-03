@@ -247,10 +247,10 @@ jobs:
           echo "没有什么可提交的"                                                                  ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
-
-
-
-
+        
+        
+        echo "PUSH_FORMER=${{ env.PUSH_FORMER }}"
+        
     - name: 发布固件
       uses: softprops/action-gh-release@v2
       if: (env.PUSH_MAIN == 'true' || env.PUSH_FORMER == 'true') && github.event.inputs.release == 'true'                                             ## 判断 packages 参数是否为 'true'；
