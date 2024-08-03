@@ -253,8 +253,8 @@ jobs:
 
     - name: 发布固件
       uses: softprops/action-gh-release@v2
-      # if: ${{ github.event.inputs.release == 'true' }}                                             ## 判断 packages 参数是否为 'true'；
-      if: needs.Push_main.outputs.PUSH_MAIN == 'true' || needs.Push_former.outputs.PUSH_FORMER == 'true'
+      if: (env.PUSH_MAIN == 'true' || env.PUSH_FORMER == 'true') && github.event.inputs.release == 'true'                                             ## 判断 packages 参数是否为 'true'；
+      # if: needs.Push_main.outputs.PUSH_MAIN == 'true' || needs.Push_former.outputs.PUSH_FORMER == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
