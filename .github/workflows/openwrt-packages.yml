@@ -175,7 +175,7 @@ jobs:
         
         
         
-    - name: 删除重复子目录
+    - name: 整理重复子目录
       run: |
         
         for item in ${{matrix.target}}/*; do                                                                           ## 遍历 main 目录内所有文件目录，
@@ -188,34 +188,36 @@ jobs:
         mkdir -p packages                                                                                               ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"                                             ## 压缩“former”文件夹
         tar -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"                                         ## 压缩“main”文件夹
-        pwd
         # cd packages
-        echo "PACKAGES=$PWD" >> $GITHUB_ENV
+        echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                             ## 列表写入变量中
+        
+        
+        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                                       ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
+          cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/${{matrix.target}}
+        fi
+        
+        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                                     ## 判断！ 当有 README.md 文件时，复制到main目录内
+          cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
+        fi
         
         
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
-        name: former_${{ env.date_BAK }}               ## 文件名称
-        path: ${{ github.workspace }}
+        name: former_${{ env.date_BAK }}               ## former 文件名称
+        path: ${{ github.workspace }}                  ## 当前仓库运行路径
         
       
 
         
     - name: 推送 main 分支                             ## Upload
+      id: Push_main
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
         pwd && ls
         
-        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                  ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
-          cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/${{matrix.target}}
-        fi
-        
-        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                ## 判断！ 当有 README.md 文件时，复制到main目录内
-          cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
-        fi
         
         
         cd $GITHUB_WORKSPACE/${{matrix.target}}                                                    ## 进入到main目录内
@@ -224,24 +226,25 @@ jobs:
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                 ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}             ## 上传仓库的地址（新创建的仓库）
         else
-          echo "nothing to commit"                                                                 ## 反之提示： “没有什么可提交的”
+          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
         
         
         
     - name: 推送 former 分支                           ## Upload
+      id: Push_former
       env: 
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
         
-        cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到main目录内
+        cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到“former”目录内
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                  ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
         else
-          echo "nothing to commit"                                                                  ## 反之提示： “没有什么可提交的”
+          echo "没有什么可提交的"                                                                  ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
 
@@ -250,8 +253,8 @@ jobs:
 
     - name: 发布固件
       uses: softprops/action-gh-release@v2
-      if: ${{ github.event.inputs.release == 'true' }}                                             ## 判断 packages 参数是否为 'true'；
-      # if: success()
+      # if: ${{ github.event.inputs.release == 'true' }}                                             ## 判断 packages 参数是否为 'true'；
+      if: needs.Push_main.outputs.PUSH_MAIN == 'true' || needs.Push_former.outputs.PUSH_FORMER == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
