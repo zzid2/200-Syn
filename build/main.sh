@@ -119,7 +119,7 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git     
 # https://github.com/pppoex/openwrt-packages?tab=readme-ov-file
 git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
 
-#git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
+git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
 
 
 
