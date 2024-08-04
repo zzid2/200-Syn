@@ -51,7 +51,7 @@ git clone --depth 1 https://github.com/fw876/helloworld luci-app-ssr-plus							
 ### git clone --depth 1 https://github.com/fw876/helloworld && mv -n helloworld/{lua-neturl,shadow-tls,tuic-client,luci-app-ssr-plus} ./ ; rm -rf helloworld   # 保留：luci-app-ssr-plus + tuic-client + shadow-tls
 ### mv {lua-neturl,shadow-tls,tuic-client} luci-app-ssr-plus                        # 移动 tuic-client + shadow-tls 文件
 
-# git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
+git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
 
 git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
 mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
@@ -74,7 +74,7 @@ mv alist luci-app-alist                                                         
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman               # Docker容器管理
 git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git                                                                                  # Diskman 磁盘分区管理
 
-git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
+#git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
 ### git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff                                                                              # 关机插件
 
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset.git                                                                           # 插件 执行定时任务
