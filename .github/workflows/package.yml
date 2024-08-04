@@ -90,7 +90,14 @@ jobs:
         echo "LANG=zh_CN.UTF-8" >> $GITHUB_ENV                                                     ## 加入中文语言包 的变量，会持续显示中文语言；
         
         
-
+        
+    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        
         
         
     - name: 下载 former 分支                           ## Clone packages
@@ -171,13 +178,6 @@ jobs:
         
         
         
-    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
     - name: 整理重复子目录
       run: |
         
@@ -192,7 +192,7 @@ jobs:
         mkdir -p packages                                                                                               ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
         tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date_BAK }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
-        mv $REPO_BRANCH/Download_setup packages/"Download_setup"                                                          ## 移动 仓库发布资产至 packages 目录内
+        mv $REPO_BRANCH/"Download_setup" packages/"Download_setup"                                                        ## 移动 仓库发布资产至 packages 目录内
         tar --exclude='.git' -czvf packages/"Download_setup"_${{ env.date_BAK }}.tar.gz "Download_setup"                  ## 压缩 仓库发布资产
         # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                             ## 列表写入变量中
