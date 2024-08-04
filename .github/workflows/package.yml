@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [main]                                 ## 运行main分支
+        target: [package]                                 ## 运行main分支
         
     steps:
     
