@@ -1,4 +1,6 @@
 #!/bin/bash
+pwd_path=$(pwd)                         ## 赋于成变量= 当前执行目录，
+
 function git_sparse_clone() {                                                 ## 只下载指定的目录，并移动到根目录；
 branch="$1" rurl="$2" localdir="$3" && shift 3                                ## 变量：branch=分支   rurl=链接    localdir=本地根目录
 git clone -b $branch --depth 1 --filter=blob:none --sparse $rurl $localdir
@@ -34,7 +36,79 @@ rm -rf $1
 
 
 
+
+
+
 git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub.git Fast-GitHub   ## GitHub加速工具
+git clone --depth 1 https://github.com/WangGithubUser/FastGitHub FastGitHub    ## GitHub加速工具1
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+# sudo apt install jq             ## 需要安装 jp 依赖工具
+
+# 要下载的仓库列表
+REPOS=(
+    "WangGithubUser/FastGitHub"
+    # "WangGithubUser/FastGitHub"
+    # "thirdUser/thirdRepo"
+)
+
+# 下载文件保存的指定目录
+DOWNLOAD_DIR="$pwd_path/download"
+
+
+# 获取前3个发布的资产并下载
+download_latest_releases() {
+    local repo=$1
+    local api_url="https://api.github.com/repos/$repo/releases"
+
+    echo "获取 $repo 的发布信息..."
+    local releases_info=$(curl -s $api_url)
+    
+    # 检查是否成功获取 release 信息
+    if [ $? -ne 0 ]; then
+        echo "获取 $repo 的发布信息失败"
+        return 1
+    fi
+
+    # 获取发布数量
+    local release_count=$(echo $releases_info | jq 'length')
+
+    # 处理发布数量不满3个的情况
+    local max_releases=3
+    if [ $release_count -lt $max_releases ]; then
+        max_releases=$release_count
+    fi
+
+    # 使用 jq 提取发布的标签名和资产下载 URL
+    for i in $(seq 0 $(($max_releases - 1))); do
+        local tag_name=$(echo $releases_info | jq -r ".[$i].tag_name")
+        local asset_urls=$(echo $releases_info | jq -r ".[$i].assets[].browser_download_url")
+
+        if [ -z "$asset_urls" ]; then
+            echo "未找到 $repo 发布的资产。"
+            continue
+        fi
+
+        # 创建目录以保存下载的文件
+        local repo_name="${repo//\//-}-$tag_name"
+		local download_path="$DOWNLOAD_DIR/$repo_name"
+        mkdir -p $download_path
+
+        for url in $asset_urls; do
+            echo "正在下载 $url..."
+            curl -L -o "$download_path/$(basename $url)" $url
+        done
+
+        echo "已将 $repo 的资产下载到 $download_path"
+    done
+}
+
+# 遍历所有仓库并下载前3个发布的资产
+for repo in "${REPOS[@]}"; do
+    download_latest_releases $repo
+done
+--------------------------------------------------------------------------------------------------------------------------------
 
 
 
