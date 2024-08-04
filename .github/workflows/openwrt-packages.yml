@@ -205,7 +205,7 @@ jobs:
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
-        name: "{#${{env.Run_number}}}"_former_${{ env.date_BAK }}               ## former 文件名称
+        name: "{ #${{env.Run_number}} }"_former_${{ env.date_BAK }}               ## former 文件名称
         path: ${{ github.workspace }}                  ## 当前仓库运行路径
         
       
