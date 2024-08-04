@@ -38,11 +38,19 @@ rm -rf $1
 
 
 
-
-git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub.git Fast-GitHub   ## GitHub加速工具
-git clone --depth 1 https://github.com/WangGithubUser/FastGitHub FastGitHub    ## GitHub加速工具1
-
-
+git clone --depth 1 https://github.com/WangGithubUser/FastGitHub FastGitHub    ## GitHub加速工具   （下载资产）
+git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub Fast-GitHub       ## GitHub加速工具
+git clone --depth 1 https://github.com/cuifengcn/TAICHI-flet                   ## 太极工具箱
+git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher             ## PC版微信/QQ/TIM防撤回
+git clone --depth 1 https://github.com/truedread/netflix-1080p                 ## Netflix-1080P插件（下载资产）
+git clone --depth 1 https://github.com/h2y/Shadowrocket-ADBlock-Rules          ## 火箭  屏蔽广告规则
+git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file              ## 开源在线文件传输
+# git clone --depth 1 
+# git clone --depth 1 
+# git clone --depth 1 
+# git clone --depth 1 
+# git clone --depth 1 
+# git clone --depth 1 
 # ----------------------------------下载仓库最新发布的资产------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------------
 
@@ -51,7 +59,7 @@ git clone --depth 1 https://github.com/WangGithubUser/FastGitHub FastGitHub    #
 # 要下载的仓库列表
 REPOS=(
     "WangGithubUser/FastGitHub"
-    # "WangGithubUser/FastGitHub"
+    "truedread/netflix-1080p"
     # "thirdUser/thirdRepo"
 )
 
