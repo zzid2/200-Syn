@@ -186,8 +186,8 @@ jobs:
         done
         
         mkdir -p packages                                                                                               ## 创建“packages”目录，用于存放.tar.gz压缩包，
-        tar -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"                                             ## 压缩“former”文件夹
-        tar -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"                                         ## 压缩“main”文件夹
+        tar --exclude='.git' -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"                            ## 压缩“former”文件夹（排除.git目录）
+        tar --exclude='.git' -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"                        ## 压缩“main”  文件夹（排除.git目录）
         # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                             ## 列表写入变量中
         
