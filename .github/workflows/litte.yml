@@ -2,6 +2,8 @@
 
 on:
   push:
+    branches:
+      - main                          # 确保只在 main 分支有改动时，触发编译
     paths:
       - '.github/workflows/litte.yml' # 当推送到 .github/workflows/litte.yml 时触发
       - 'commit/**'                   # 当推送到 commit 目录下的任何文件时触发
