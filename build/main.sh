@@ -74,7 +74,7 @@ mv alist luci-app-alist                                                         
 git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman               # Docker容器管理
 git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git                                                                                  # Diskman 磁盘分区管理
 
-#git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
+git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
 ### git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff                                                                              # 关机插件
 
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset.git                                                                           # 插件 执行定时任务
