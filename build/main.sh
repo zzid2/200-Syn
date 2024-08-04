@@ -39,7 +39,7 @@ git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt
 mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
 ### git clone --depth 1 https://github.com/jerrykuku/lua-maxminddb.git																								  # luci-app-bypass插件的其中一个依赖包
 
-git clone --depth 1 https://github.com/vernesong/OpenClash.git && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash                       # OenClash小猫咪
+# git clone --depth 1 https://github.com/vernesong/OpenClash.git && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash                       # OenClash小猫咪
 ### git clone --depth 1 https://github.com/hubbylei/luci-app-clash.git
 ### https://github.com/frainzy1477/luci-app-clash
 
