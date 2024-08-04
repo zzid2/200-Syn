@@ -90,14 +90,7 @@ jobs:
         echo "LANG=zh_CN.UTF-8" >> $GITHUB_ENV                                                     ## 加入中文语言包 的变量，会持续显示中文语言；
         
         
-        
-    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        
+
         
         
     - name: 下载 former 分支                           ## Clone packages
@@ -177,6 +170,13 @@ jobs:
         # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
         
         
+        
+    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
     - name: 整理重复子目录
       run: |
