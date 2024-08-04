@@ -282,7 +282,7 @@ jobs:
         keep_latest: 30            ## 保留最少数（默认值：3）
         delete_tags: true
       env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         
        
        
