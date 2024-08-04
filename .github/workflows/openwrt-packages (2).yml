@@ -4,7 +4,7 @@
 ## 首先手动运行一次“20-Syn”工作流。
 
 
-name: 更新_Luci插件                                    ## Actions工作流的名称
+name: Package                                          ## Actions工作流的名称
 on:
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
@@ -29,15 +29,16 @@ on:
     branches:
       - main                                           ## 确保只在 main 分支有改动时，触发编译
     paths:                                             ## 当指定文件“修改变动时” 触发编译
-      - '.github/workflows/openwrt-packages.yml'       ## 默认是"openwrt-packages.yml"文件变动时 触发编译
-      - 'main.sh'                                      ## 默认是"main.sh"文件变动时              触发编译
+      - '.github/workflows/package.yml'                ## 默认是"package.yml"文件变动时 触发编译
+      - 'package'                                      ## 默认是"package.sh"文件变动时  触发编译
       
       
 env:                                                   ## 全局变量定义
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
-  REPO_BRANCH: main                                    ## 主要更新 分支
-  REPO_FORMER: former                                  ## 旧版删库 分支
+  CangKu_URL: 'https://github.com/zzid2/luci-201.git'  ## 推送仓库    （luci-app.git   luci-120.git）
+  REPO_BRANCH: main                                    ## 推送分支_主分支
+  REPO_FORMER: former                                  ## 推送分支_旧版删库分支
+  REPO_RESERVE: reserve                                ## 推送分支_收藏分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
   
@@ -51,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [main,small]                                 ## 运行main分支
+        target: [main]                                 ## 运行main分支
         
     steps:
     
@@ -129,10 +130,10 @@ jobs:
       run: |
         # pwd && ls
         
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || {                              ## 克隆 main 分支，如果克隆远程仓库失败，本地创建新仓库。
+        git clone -b $REPO_BRANCH $CangKu_URL $REPO_BRANCH || {                              ## 克隆 main 分支，如果克隆远程仓库失败，本地创建新仓库。
             echo "克隆远程仓库失败，本地创建新仓库！！！";
-            mkdir ${{matrix.target}};
-            cd ${{matrix.target}};
+            mkdir $REPO_BRANCH;
+            cd $REPO_BRANCH;
             git init;
             git branch -M $REPO_BRANCH;
             cd ..;
@@ -140,7 +141,7 @@ jobs:
         
         
         ## 比较main和former目录，在重复的former子目录后追加后缀；
-        for item in ${{matrix.target}}/*; do                                                                          ## 遍历 main 目录内所有文件目录，
+        for item in $REPO_BRANCH/*; do                                                                          ## 遍历 main 目录内所有文件目录，
             if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
                 mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"      ## 重命名 former 目录内重复的子目录，追加后缀名；
                 echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"
@@ -148,11 +149,11 @@ jobs:
         done
         
         
-        rsync -av --exclude='.git' ${{matrix.target}}/ $REPO_FORMER/                               ## 同步 复制“main”目录内文件 到“former”目录内，并排除 .git目录
+        rsync -av --exclude='.git' $REPO_BRANCH/ $REPO_FORMER/                               ## 同步 复制“main”目录内文件 到“former”目录内，并排除 .git目录
         
         
         chmod +x build/${{matrix.target}}.sh                                                       ## 增加 “build/main.sh”脚本可执行权限
-        cd ${{matrix.target}}                                                                      ## cd 进入 main 目录
+        cd $REPO_BRANCH                                                                      ## cd 进入 main 目录
         
         
         # rm -rf {LICENSE,README,README.md,README_en.md}
