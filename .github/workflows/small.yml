@@ -2,8 +2,6 @@ name: small
 
 on:
   push:
-    branches:
-      - main                          # 确保只在 main 分支有改动时，触发编译
     paths:
       - '.github/workflows/small.yml'
       - 'small.sh'
