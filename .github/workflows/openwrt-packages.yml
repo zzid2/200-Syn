@@ -76,9 +76,10 @@ jobs:
         CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 仓库的名称 如：20-Syn
         echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 仓库的名称 写入到变量中
         
+        ## 时间的变量
         echo "date=$(date "+%Y.%m.%d-%H%M")" >> $GITHUB_ENV                                        ## 标签时间格式：2024.01.02.1310
         echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## 时间变量格式: 2021年01月02号-13点10分
-        echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间变量格式：08.01
+        echo "date2=$(date +'%m.%d')" >> $GITHUB_ENV                                               ## 时间变量格式：08.01
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
         
         git config --global user.name "actions-user"                                               ## 提交名称
@@ -142,8 +143,8 @@ jobs:
         ## 比较main和former目录，在重复的former子目录后追加后缀；
         for item in $REPO_BRANCH/*; do                                                                                ## 遍历 main 目录内所有文件目录，
             if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
-                mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"      ## 重命名 former 目录内重复的子目录，追加后缀名；
-                echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"
+                mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"         ## 重命名 former 目录内重复的子目录，追加后缀名；
+                echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"
             fi
         done
         
@@ -189,18 +190,18 @@ jobs:
         done
         
         
-        mkdir -p packages                                                                                               ## 创建“packages”目录，用于存放.tar.gz压缩包，
-        tar --exclude='.git' -czvf packages/$REPO_FORMER_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
-        tar --exclude='.git' -czvf packages/$REPO_BRANCH_${{ env.date_BAK }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
+        mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
+        tar --exclude='.git' -czvf packages/$REPO_FORMER_${{ env.date2 }}.tar.gz "$REPO_FORMER"                        ## 压缩“former”文件夹（排除.git目录）
+        tar --exclude='.git' -czvf packages/$REPO_BRANCH_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                        ## 压缩“main”  文件夹（排除.git目录）
         # cd packages
-        echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                             ## 列表写入变量中
+        echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
         
         
-        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                                       ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
+        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                                      ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
           cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/$REPO_BRANCH
         fi
         
-        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                                     ## 判断！ 当有 README.md 文件时，复制到main目录内
+        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                                    ## 判断！ 当有 README.md 文件时，复制到main目录内
           cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/$REPO_BRANCH
         fi
         
@@ -209,7 +210,7 @@ jobs:
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
-        name: former_${{ env.date_BAK }}               ## former 文件名称
+        name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
         path: ${{ github.workspace }}                  ## 当前仓库运行路径
         
         
@@ -245,12 +246,13 @@ jobs:
         
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
-          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                  ## 插件后面备注更新时间
+          Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+          git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
-          echo "push_former=true" >> $GITHUB_ENV                                                    ## 如果有   推送插件，写入变量真
+          echo "push_former=true" >> $GITHUB_ENV                                                   ## 如果有   推送插件，写入变量真
         else
-          echo "没有什么可提交的"                                                                  ## 反之提示： “没有什么可提交的”
-          echo "push_former=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
+          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
+          echo "push_former=false" >> $GITHUB_ENV                                                  ## 如果没有 推送插件，写入变量假
           exit 0
         fi || exit 0
         
