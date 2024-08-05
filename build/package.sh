@@ -38,13 +38,13 @@ rm -rf $1
 
 
 
-git clone --depth 1 https://github.com/WangGithubUser/FastGitHub FastGitHub    ## GitHub加速工具   （下载资产）
-git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub Fast-GitHub       ## GitHub加速工具
-git clone --depth 1 https://github.com/cuifengcn/TAICHI-flet                   ## 太极工具箱
-git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher             ## PC版微信/QQ/TIM防撤回
-git clone --depth 1 https://github.com/truedread/netflix-1080p                 ## Netflix-1080P插件（下载资产）
-git clone --depth 1 https://github.com/h2y/Shadowrocket-ADBlock-Rules          ## 火箭  屏蔽广告规则
-git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file              ## 开源在线文件传输
+git clone --depth 1 https://github.com/WangGithubUser/FastGitHub       FastGitHub加速工具              ## GitHub加速工具              （下载资产）
+git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub           Fast-GitHub加速工具             ## GitHub加速工具
+git clone --depth 1 https://github.com/cuifengcn/TAICHI-flet           TAICHI-flet太极工具箱           ## 太极工具箱
+git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher     RevokeMsgPatcher微信防撤回      ## PC版微信/QQ/TIM防撤回       （下载资产）
+git clone --depth 1 https://github.com/truedread/netflix-1080p         netflix-1080p                   ## Netflix-1080P插件           （下载资产）
+git clone --depth 1 https://github.com/h2y/Shadowrocket-ADBlock-Rules  Shadowrocket-ADBlock-Rules广告过滤功能   ## 火箭  屏蔽广告规则
+git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file      tl-rtc-file在线文件传输         ## 开源在线文件传输
 # git clone --depth 1 
 # git clone --depth 1 
 # git clone --depth 1 
@@ -60,7 +60,7 @@ git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file              #
 REPOS=(
     "WangGithubUser/FastGitHub"
     "truedread/netflix-1080p"
-    # "thirdUser/thirdRepo"
+    "huiyadanli/RevokeMsgPatcher"
 )
 
 # 下载文件保存的指定目录
