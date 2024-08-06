@@ -212,10 +212,7 @@ jobs:
     uses: actions/upload-artifact@v4  ## 使用 GitHub 提供的 upload-artifact 操作，版本为 v4
     with:
         name: ${{env.CangKu}}_${{ env.date2 }}  ## 工件名称
-        path: |
-          ${{ github.workspace }}/former  ## 第一个目录路径
-          ${{ github.workspace }}/main  ## 第二个目录路径
-        
+        path: ${{ github.workspace }}/former,${{ github.workspace }}/main
         
         
         
