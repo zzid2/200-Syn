@@ -17,13 +17,14 @@ function git_package(){
     repo=`echo $1 | rev | cut -d'/' -f 1 | rev`
     pkg=`echo $2 | rev | cut -d'/' -f 1 | rev`
 # find package/ -follow -name $pkg -not -path "package/openwrt-packages/*" | xargs -rt rm -rf
-    localdir=./                            # 变量= 保存的文件路径
+    localdir=./                                  # 变量= 下载文件路径（默认=  ./  ）
     git clone --depth=1 --single-branch $1
-    [ -d "$localdir" ] || mkdir -p "$localdir"   # 判断当前是否有 download 目录，如果不存在 则新创建 download 目录；= (-d 判断目录是否存在)  (mkdir -p 判断结果：如果目录不存在，则新创建 download 目录)
-    mv $2 "$localdir"                            # 移动下载的文件 至 download 目录内；
+    [ -d "$localdir" ] || mkdir -p "$localdir"
+    mv $2 "$localdir"                            # 移动下载的文件,至当前目录内；
     rm -rf $repo
 }
-##命令用法： git_package https://github.com/coolsnowwolf/luci luci/applications/luci-app-ddns   # git_package 加仓库链接  加仓库的文件路径
+##           git_package + 仓库链接 + 仓库文件路径
+## 命令用法： git_package "https://github.com/coolsnowwolf/luci" "luci/applications/luci-app-ddns"
 
 
 
@@ -77,6 +78,8 @@ git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git              
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
 ### git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff                                                                              # 关机插件
 
+git clone --depth 1 https://github.com/garypang13/luci-theme-edge luci-theme-edge       # Edge 带背景音乐
+
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset.git                                                                           # 插件 执行定时任务
 #git clone --depth 1 https://github.com/sirpdboy/netspeedtest.git                                                                                   # 网络速度测试
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-advanced.git                                                                              # 系统高级设置   高级设置（内置luci-app-fileassistant文件助手）
@@ -95,7 +98,7 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git     
 
 #git clone --depth 1 https://github.com/honwen/luci-app-aliddns.git																				    # 阿里DDNS
 #git clone --depth 1 https://github.com/kiddin9/luci-app-dnsfilter.git                                                                              # DNS 过滤器
-#git clone --depth 1 https://github.com/ophub/luci-app-amlogic.git amlogic && mv -n amlogic/luci-app-amlogic ./;rm -rf amlogic                      # 晶晨宝盒（N1或电视盒子）
+git clone --depth 1 https://github.com/ophub/luci-app-amlogic.git amlogic && mv -n amlogic/luci-app-amlogic ./;rm -rf amlogic                      # 晶晨宝盒（N1或电视盒子）
 #git clone --depth 1 https://github.com/rufengsuixing/luci-app-onliner.git package/luci-app-onliner                                                 # Online User 显示在线主机 需要luci-app-nlbwmon
 # git clone --depth 1 https://github.com/ntlf9t/luci-app-easymesh.git	                                                                            # 简单MESH易网
 # git clone --depth 1 https://github.com/Huangjoe123/luci-app-eqos.git	                                                                            # EQoS
@@ -118,23 +121,23 @@ git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git     
 # 长期不维护的源码
 # https://github.com/pppoex/openwrt-packages?tab=readme-ov-file
 git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷向导设置
+git clone --depth=1 https://github.com/phillipliang/install-program install-program     # N1写入包 旧版 编译前勾选：Utilities--> install-program（推荐）
+git clone --depth=1 https://github.com/krysof/install-program install-program-2         # N1写入包 旧版
 
-git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
+git clone --depth=1 https://github.com/281677160/luci-app-autoupdate luci-app-autoupdate  # openwrt自动升级
+git clone --depth=1 https://github.com/roacn/luci-app-autoupdate luci-app-autoupdate-2    # openwrt自动升级
 
+git clone --depth=1 https://github.com/xylz0928/luci-app-shutdown luci-app-shutdown       # 一键关闭/重启设备上的系统
+# https://github.com/Hyy2001X/AutoBuild-Packages
 
+git clone --depth=1 https://github.com/AlexZhuo/luci-app-bandwidthd luci-app-bandwidthd   # 流量统计
 
+git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb lua-maxminddb              # Lua 版 MaxMind DB 阅读器
 
+git clone --depth=1 https://github.com/ylqjgm/mknop   mknop                               # 自动构建斐讯 N1、微加云、贝壳云、我家云、S905x3( X96 Max Plus, HK1 Box ) OpenWrt 固件脚本
 
-
-
-
-
-
-
-
-
-
-
+git clone --depth=1 https://github.com/DavidDen/mknop mknop-2                             # 斐讯N1一键制作OpenWrt镜像脚本
 
 
 
@@ -156,6 +159,8 @@ git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git         
 
 git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
 git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
+
+git clone --depth 1 https://github.com/XXKDB/luci-theme-argon_armygreen                                ## 动漫主题
 
 ### git clone --depth 1 https://github.com/sirpdboy/luci-theme-opentopd                                  # 橙色主题
 ### git clone --depth 1 https://github.com/kenzok8/luci-theme-ifit ifit && mv -n ifit/luci-theme-ifit ./;rm -rf ifit

@@ -33,26 +33,29 @@ function mvdir() {
 mv -n `find $1/* -maxdepth 0 -type d` ./                                       ## 移动分支内所有文件到 当前目录；  -n 不覆盖已存在的文件
 rm -rf $1
 }
-
-
-
-
-
-git clone --depth 1 https://github.com/WangGithubUser/FastGitHub       FastGitHub_加速工具              ## GitHub加速工具              （下载资产）
+# ----------------------------------下载最新版插件，在“main”目录内----------------------------------------------------------------
+git clone --depth 1 https://github.com/WangGithubUser/FastGitHub       FastGitHub_加速工具              ## GitHub加速工具              （上传资产）
 git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub           Fast-GitHub_加速工具             ## GitHub加速工具
 git clone --depth 1 https://github.com/cuifengcn/TAICHI-flet           TAICHI-flet_太极工具箱           ## 太极工具箱
-git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher     RevokeMsgPatcher_微信防撤回      ## PC版微信/QQ/TIM防撤回       （下载资产）
-git clone --depth 1 https://github.com/truedread/netflix-1080p         netflix-1080p                    ## Netflix-1080P插件           （下载资产）
+git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher     RevokeMsgPatcher_微信防撤回      ## PC版微信/QQ/TIM防撤回       （上传资产）
+git clone --depth 1 https://github.com/truedread/netflix-1080p         netflix-1080p                    ## Netflix-1080P插件           （上传资产）
 git clone --depth 1 https://github.com/h2y/Shadowrocket-ADBlock-Rules  Shadowrocket-ADBlock-Rules_广告过滤功能   ## 火箭  屏蔽广告规则
 git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file      tl-rtc-file_在线文件传输         ## 开源在线文件传输
 git clone --depth 1 https://github.com/baogaichejian/blinker_xiaoai_wendu   blinker_xiaoai_wendu_控制esp8266    ## 点灯科技控制esp8266
 git clone --depth 1 https://github.com/chuangmengtech/blinker_xiaoai_wendu   blinker_xiaoai_wendu_esp8266温度传感器          ## esp8266温度传感器
 git clone --depth 1 https://github.com/Fatetang/blinker_xiaoai_dengpao-wendu-ESP8266 blinker_xiaoai_dengpao-wendu-ESP8266_ESP8266+继电器  # 点灯科技
+git clone --depth 1 https://github.com/esirplayground/VPS_OpenWrt      VPS_OpenWrt                      # 本部署OpenWrt到VPS平台
+git clone --depth 1 https://github.com/lollipopkit/flutter_server_box   flutter_server_box_全平台SSH工具 # 全平台SSH工具               （上传资产）
 # git clone --depth 1 
 # git clone --depth 1 
-# git clone --depth 1 
+
+
+
+
+
+
 # ----------------------------------下载仓库最新发布的资产------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------------------------------------
+
 
 # sudo apt install jq             ## 需要安装 jp 依赖工具
 
@@ -61,10 +64,11 @@ REPOS=(
     "WangGithubUser/FastGitHub"
     "truedread/netflix-1080p"
     "huiyadanli/RevokeMsgPatcher"
+	"lollipopkit/flutter_server_box"
 )
 
 # 下载文件保存的指定目录
-DOWNLOAD_DIR="$pwd_path/Backups"
+DOWNLOAD_DIR="$pwd_path/Backups-exe"
 
 
 # 获取前3个发布的资产并下载
@@ -118,8 +122,72 @@ download_latest_releases() {
 for repo in "${REPOS[@]}"; do
     download_latest_releases $repo
 done
-# --------------------------------------------------------------------------------------------------------------------------------
 
+
+
+# ----------------------------------收藏的网址------------------------------------------------------------------------------------
+
+# # 创建 .gitignore 文件，忽略临时文件和目录
+
+# content="https://www.im0db.com/3378.html                 #  我不是药神
+# https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
+# 1111
+# "
+# # 结尾字符
+
+
+# # 检查文件是否存在
+# if [ -f "Favorite_URL.txt" ]; then
+	# cp Favorite_URL.txt Favorite_URL_BAK.txt
+    # current_content=$(cat Favorite_URL_BAK.txt)                   # 变量 =读取内容并与预定义内容比较
+    # if [ "$current_content" != "$content" ]; then             # 判断 文件是否一致
+        # # temp_file=$(mktemp)                                   # 变量 =临时文件
+        # # echo "$content" > "$temp_file"                        # 写入 当前内容写入临时文件中
+        # if ! cmp -s "$content" "Favorite_URL_BAK.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
+            # mv "$content" "Favorite_URL.txt"                # 内容不一致，更新文件
+			# rm Favorite_URL_BAK.txt
+			# echo "内容不一致，已更新文件。"
+        # else
+            # echo "文件内容一致，无需修改。"
+            # rm Favorite_URL_BAK.txt                                   # 内容一致，删除临时文件
+        # fi
+    # else
+        # echo "文件内容一致，无需修改。"                       # 内容一致，跳过写操作
+    # fi
+# else
+    # echo "$content" > Favorite_URL.txt                        # 写入 文件不存在，创建文件并写入内容
+    # echo "文件不存在，已创建并写入内容。"
+# fi
+
+
+# urls=(
+    # "https://www.im0db.com/3378.html"
+    # "https://pan.quark.cn/s/ede840ba6d9d#/list/share"
+    # "https://example.com/url3"
+    # "https://example.com/url4"
+    # "https://example.com/url5"
+    # "https://example.com/url6"
+    # "https://example.com/url7"
+    # "https://example.com/url8"
+    # "https://example.com/url9"
+    # "https://example.com/url10"
+# )
+# > $pwd_path/Favorite_URL.txt
+# for url in "${urls[@]}"; do
+    # echo "$url" >> $pwd_path/Favorite_URL.txt
+# done
+
+# cd $pwd_path  # 确保在正确的目录下运行 git 命令
+
+# if git status --porcelain | grep Favorite_URL.txt; then
+    # echo "Favorite_URL.txt 文件已更新"
+# else
+    # echo "Favorite_URL.txt 文件无变化"
+# fi
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------
 
 
 rm -rf ./*/.git ./*/.gitattributes ./*/.svn ./*/.github ./*/.gitignore create_acl_for_luci.err create_acl_for_luci.ok create_acl_for_luci.warn      # 删除多余的文件，比如：.git   .gitattributes  .svn    .github   .gitignore
