@@ -35,7 +35,7 @@ on:
       
 env:                                                   ## 全局变量定义
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-exe.git'  ## 推送仓库_
+  CangKu_URL: 'https://github.com/zzid2/luci-exe-200.git'  ## 推送仓库_
   REPO_BRANCH: main                                    ## 推送分支_主分支
   REPO_FORMER: former                                  ## 推送分支_旧版删库分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
@@ -333,8 +333,8 @@ jobs:
         echo "$(date +%s)" > end_time.txt                                                           ## 结束时间 写入到“end_time.txt”文本中（与开头“start_time.txt”文本对应）
         ELAPSED_MINUTES=$(awk -v start=$(cat start_time.txt) -v end=$(cat end_time.txt) 'BEGIN { elapsed = end - start; printf "%.2f", elapsed / 60 }')         ## = ELAPSED_MINUTES变量：计算运行时间，并保留两位小数点和保留前面有0
         echo "ELAPSED_MINUTES=$ELAPSED_MINUTES" >> $GITHUB_ENV                                                                                                  ## 总运行时间（分钟）写入变量： ELAPSED_MINUTES    ELAPSED_TIME
+        rm -rf {start_time.txt,end_time.txt}
         echo "总运行时间为 ${{ env.ELAPSED_MINUTES }} 分钟"
-        #rm -rf {start_time.txt,end_time.txt}
         
         
         
